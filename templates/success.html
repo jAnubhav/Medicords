@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<style>
+    #success-box {
+        font-size: 3em;
+        font-weight: 700;
+    }
+
+    #dashboard-link {
+        font-size: 1em;
+        background: var(--theme);
+        text-decoration: none;
+    }
+</style>
+
+<div class="container">
+    <div id="success-box">Success</div>
+    <br>
+    <a id="dashboard-link" class="btn" href="./hospital/dashboard">Go to Dashboard</a>
+</div>
+
+{% endblock %}

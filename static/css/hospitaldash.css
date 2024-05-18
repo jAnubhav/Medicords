@@ -1,0 +1,41 @@
+textarea {
+    outline: none;
+}
+
+.main-top {
+    margin: 20px;
+}
+
+.card {
+    text-align: center;
+    gap: 10px;
+}
+
+.h-form {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.buttons button {
+    margin: 20px 10px;
+    padding: 10px;
+    border: 1px solid var(--theme);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--theme);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.buttons button:hover {
+    background: var(--theme);
+    color: var(--white);
+}
+
+.hform {
+    width: 80vw;
+    padding: 20px;
+    background: white;
+    z-index: 1000;
+}

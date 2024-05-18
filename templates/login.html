@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="d-flex login_box">
+    <div class="d-flex fld-column jc-center input-form left">
+        <form action="./dashboard" method="post" class="d-flex fld-column w-100 input-form">
+            <p class="title">LOG IN</p>
+
+            <div class="w-100 input-box">
+                <input type="text" name="username" id="username" class="w-100 input-field" autocomplete="off" required>
+                <i class="fas fa-user movable"></i>
+                <label for="username" class="movable">{{user}}'s Id</label>
+            </div>
+            
+            <div class="w-100 input-box">
+                <input type="password" name="password" id="password" class="w-100 input-field" required>
+                <i class="fas fa-lock movable"></i>
+                <label for="password" class="movable">Password</label>
+            </div>
+
+            <button class="w-100 input-field btn">Log In</button>
+        </form>
+
+        <hr class="w-100">
+
+        <div class="d-flex jc-center extra">
+            <p>Don't have an account? <a href="./signup">Sign Up</a></p>
+        </div>
+    </div>
+
+    <div class="d-flex fld-column jc-center right">
+        <p class="head-text">Medicords</p>
+        <p class="sub-text">Storing and accessing medical records becomes modern and easy with the use blockchain
+            technology.</p>
+    </div>
+</div>
+{% endblock %}

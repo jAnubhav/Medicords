@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block body %}
+
+    <header class="d-flex">
+        <p class="title">Medicords</p>
+
+        <ul class="d-flex navbar">
+            <li><a class="link" href="#landing">Home</a></li>
+            <li><a class="link" href="#about">About Us</a></li>
+            <li><a class="link" href="#services">Services</a></li>
+        </ul>
+
+        <div>
+            <button class="link btn" onclick="makeVisible(0)">Log In</button>
+            <button class="link btn" onclick="makeVisible(1)">Sign Up</button>
+        </div>
+    </header>
+
+    <section id="landing">
+        <div class="d-flex hero-text">
+            <p class="head-text">Safeguarding your wellness</p>
+            <p class="sub-text">Storing and accessing medical records becomes modern and easy with the use blockchain
+                technology.</p>
+        </div>
+    </section>
+
+    <section class="p-fixed hidden" id="cover"></section>
+
+    <section class="p-fixed hidden" id="choices">
+        <p class="title" style="text-transform: capitalize;"></p>
+
+        <div class="d-flex">
+            <a href="./patient/" class="choice">
+                <img src="{{url_for('static', filename='img/choice1.jpg')}}" alt="Image">
+                <p>Patient</p>
+            </a>
+    
+            <a href="./hospital/" class="choice">
+                <img src="{{url_for('static', filename='img/choice2.avif')}}" alt="Image">
+                <p>Hospital</p>
+            </a>
+        </div>
+    </section>
+
+    <section id="about">
+        <p class="title">About Us</p>
+        <div class="d-flex about-container">
+            <p class="text-box">Few hospital chains try to control the medical records of their patients and establish
+                their monopoly in the market. But storing medical records on the blockchain holds the promise of
+                revolutionizing the healthcare industry by addressing issues related to security, accessibility, and
+                interoperability. Ethereum's decentralized architecture eliminates the need for a central authority,
+                reducing the risk of data breaches and unauthorized access. Patients can seamlessly access their medical
+                history from any healthcare provider connected to our network.</p>
+
+            <img src="{{url_for('static', filename='img/bg.jpg')}}" alt="Image">
+        </div>
+
+        <div class="d-flex about-container reversed">
+            <p class="text-box">Leveraging Ethereum's decentralized and tamper-resistant nature, medical records can be
+                securely stored in a transparent and immutable ledger. Each patient's data can be cryptographically
+                linked to their unique identifier, ensuring privacy and authenticity. Smart contracts can play a crucial
+                role in managing access permissions, allowing patients to control who can view their records and under
+                what circumstances. This not only enhances patient confidentiality but also streamlines the sharing of
+                information among healthcare providers.</p>
+
+            <img src="{{url_for('static', filename='img/about2.jpg')}}" alt="Image">
+        </div>
+    </section>
+
+    <section id="services">
+        <p class="title">Our Services</p>
+
+        <div class="d-flex card-holder">
+            <div class="card">
+                <div class="card-title">
+                    <img src="{{url_for('static', filename='img/blc.jpg')}}" alt="Image">
+                    <p>Storage of Data</p>
+                </div>
+                <div class="card-info">
+                    <p>We have pioneered a cutting-edge solution that leverages the power of blockchain to offer a highly secure platform for storing medical records.</p>
+                </div>
+            </div>q
+
+            <div class="card">
+                <div class="card-title">
+                    <img src="{{url_for('static', filename='img/uni.jpg')}}" alt="Image">
+                    <p>Unified Medical Records</p>
+                </div>
+
+                <div class="card-info">
+                    <p>We store all medical records in one place, allowing for easier analysis by doctors and informed decision making for patient treatment.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <img src="{{url_for('static', filename='img/smc.jpg')}}" alt="Image">
+                    <p>Health analysis</p>
+                </div>
+
+                <div class="card-info">
+                    <p>Harnessing the power of artificial intelligence, we predict future health conditions and lifestyles, empowering users to make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="d-flex">
+        <p>Made with ❤️ by CODEit</p>
+    </footer>
+
+{% endblock %}
