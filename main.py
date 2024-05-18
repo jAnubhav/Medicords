@@ -1,19 +1,19 @@
-from web3 import Web3
-from solcx import compile_source
+# from web3 import Web3
+# from solcx import compile_source
 from json import load
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from random import randrange
 
-with open("./static/data/data.json", "r") as f:
-    dataJson = load(f)
-w3 = Web3(Web3.HTTPProvider(dataJson['url']))
-build_data = {"chainId": dataJson['chainId'], "from": dataJson['wallet']}
+# with open("./static/data/data.json", "r") as f:
+#     dataJson = load(f)
+# w3 = Web3(Web3.HTTPProvider(dataJson['url']))
+# build_data = {"chainId": dataJson['chainId'], "from": dataJson['wallet']}
 
-with open("./contracts/records.sol", "r") as f:
-    _, interface = compile_source(f.read(), output_values=['abi', 'bin'], solc_version="0.8.23").popitem()
-abi, bytecode = interface['abi'], interface['bin']
+# with open("./contracts/records.sol", "r") as f:
+#     _, interface = compile_source(f.read(), output_values=['abi', 'bin'], solc_version="0.8.23").popitem()
+# abi, bytecode = interface['abi'], interface['bin']
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:anubhav@localhost/medicords'
@@ -57,27 +57,27 @@ def generateHospitalId():
             break
     return value
 
-def getBuildData():
-    return build_data | {"gasPrice": w3.eth.gas_price*2, "nonce": w3.eth.get_transaction_count(dataJson['wallet'])}
+# def getBuildData():
+#     return build_data | {"gasPrice": w3.eth.gas_price*2, "nonce": w3.eth.get_transaction_count(dataJson['wallet'])}
 
-def performTxn(txn):
-    signed_txn = w3.eth.account.sign_transaction(txn, private_key = dataJson['privateKey'])
-    txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    return w3.eth.wait_for_transaction_receipt(txn_hash)
+# def performTxn(txn):
+#     signed_txn = w3.eth.account.sign_transaction(txn, private_key = dataJson['privateKey'])
+#     txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+#     return w3.eth.wait_for_transaction_receipt(txn_hash)
 
-def runConstructor():
-    txn = w3.eth.contract(abi = abi, bytecode = bytecode).constructor().build_transaction(getBuildData())
-    return w3.eth.contract(performTxn(txn)['contractAddress'], abi=abi)
+# def runConstructor():
+#     txn = w3.eth.contract(abi = abi, bytecode = bytecode).constructor().build_transaction(getBuildData())
+#     return w3.eth.contract(performTxn(txn)['contractAddress'], abi=abi)
 
-def addData(patientId, age, symptoms, diagnosis, treatment, hospitalName):
-    txn = contract.functions.addRecord(patientId, age, symptoms, diagnosis, treatment, hospitalName).build_transaction(getBuildData())
-    _ = performTxn(txn)
+# def addData(patientId, age, symptoms, diagnosis, treatment, hospitalName):
+#     txn = contract.functions.addRecord(patientId, age, symptoms, diagnosis, treatment, hospitalName).build_transaction(getBuildData())
+#     _ = performTxn(txn)
 
-def retrieveData(patientId, index):
-    return contract.functions.getRecord(patientId, index).call()
+# def retrieveData(patientId, index):
+#     return contract.functions.getRecord(patientId, index).call()
 
-def retrieveRecords(patientId):
-    return [contract.functions.getRecords(patientId).call(), contract.functions.getLength(patientId).call()]
+# def retrieveRecords(patientId):
+#     return [contract.functions.getRecords(patientId).call(), contract.functions.getLength(patientId).call()]
 
 @app.route("/")
 def home():
