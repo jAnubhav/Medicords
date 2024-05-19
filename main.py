@@ -16,26 +16,26 @@ from random import randrange
 # abi, bytecode = interface['abi'], interface['bin']
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:anubhav@localhost/medicords'
-db = SQLAlchemy(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:anubhav@localhost/medicords'
+# db = SQLAlchemy(app)
 
-class Patientrecords(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    phone = db.Column(db.String(10))
-    email = db.Column(db.String(30))
-    dob = db.Column(db.Date)
-    gender = db.Column(db.String(10))
-    bloodGroup = db.Column(db.String(10))
-    password = db.Column(db.String(40))
+# class Patientrecords(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(30))
+#     phone = db.Column(db.String(10))
+#     email = db.Column(db.String(30))
+#     dob = db.Column(db.Date)
+#     gender = db.Column(db.String(10))
+#     bloodGroup = db.Column(db.String(10))
+#     password = db.Column(db.String(40))
 
-class Hospitalrecords(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    phone = db.Column(db.String(10))
-    email = db.Column(db.String(30))
-    website = db.Column(db.String(30))
-    password = db.Column(db.String(40))
+# class Hospitalrecords(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(30))
+#     phone = db.Column(db.String(10))
+#     email = db.Column(db.String(30))
+#     website = db.Column(db.String(30))
+#     password = db.Column(db.String(40))
 
 def generatePatientId():
     data = db.session.execute(text("select id from patientrecords"))
@@ -101,69 +101,69 @@ def signupForHospitals():
 
 @app.route("/patient/dashboard", methods=["GET", "POST"])
 def patientDash():
-    if (request.method == "POST"):
-        username = request.form.get("username")
-        password = request.form.get("password")
+    # if (request.method == "POST"):
+    #     username = request.form.get("username")
+    #     password = request.form.get("password")
 
-        if (username == None):
-            name = request.form.get("name")
-            email = request.form.get("email")
-            phone = request.form.get("phone")
-            dob = request.form.get("dob")
-            gender = request.form.get("gender")
-            bloodGroup = request.form.get("bloodGroup")
-            password = request.form.get("password")
+    #     if (username == None):
+    #         name = request.form.get("name")
+    #         email = request.form.get("email")
+    #         phone = request.form.get("phone")
+    #         dob = request.form.get("dob")
+    #         gender = request.form.get("gender")
+    #         bloodGroup = request.form.get("bloodGroup")
+    #         password = request.form.get("password")
 
-            entry = Patientrecords(id=generatePatientId(), name=name, phone=phone, email=email, dob=dob, gender=gender, bloodGroup=bloodGroup, password=password)
+    #         entry = Patientrecords(id=generatePatientId(), name=name, phone=phone, email=email, dob=dob, gender=gender, bloodGroup=bloodGroup, password=password)
 
-            db.session.add(entry)
-            db.session.commit()
-        else:
-            data = db.session.get(Patientrecords, username)
-    print(data.name)
+    #         db.session.add(entry)
+    #         db.session.commit()
+    #     else:
+    #         data = db.session.get(Patientrecords, username)
+    # print(data.name)
     return "Nothing"
 
 @app.route("/hospital/dashboard", methods=["GET", "POST"])
 def hospitalDash():
-    if (request.method == "POST"):
-        username = request.form.get("username")
-        password = request.form.get("password")
+    # if (request.method == "POST"):
+    #     username = request.form.get("username")
+    #     password = request.form.get("password")
 
-        if (username == None):
-            name = request.form.get("name")
-            email = request.form.get("email")
-            phone = request.form.get("phone")
-            website = request.form.get("website")
-            password = request.form.get("password")
+    #     if (username == None):
+    #         name = request.form.get("name")
+    #         email = request.form.get("email")
+    #         phone = request.form.get("phone")
+    #         website = request.form.get("website")
+    #         password = request.form.get("password")
 
-            entry = Hospitalrecords(id=generateHospitalId(), name=name, phone=phone, email=email, website=website, password=password)
+    #         entry = Hospitalrecords(id=generateHospitalId(), name=name, phone=phone, email=email, website=website, password=password)
 
-            db.session.add(entry)
-            db.session.commit()
-        else:
-            data = db.session.get(Hospitalrecords, username)
+    #         db.session.add(entry)
+    #         db.session.commit()
+    #     else:
+    #         data = db.session.get(Hospitalrecords, username)
     return render_template("hospitaldash.html", file="hospitaldash", title="Hospital Dashboard", id=data.id, name=data.name, email=data.email, phone=data.phone, website=data.website)
 
 @app.route("/success", methods=["GET", "POST"])
 def success():
-    if (request.method == "POST"):
-        username = int(request.form.get("username"))
-        name = request.form.get("name")
-        age = int(request.form.get("age"))
-        symptoms = request.form.get("symptoms")
-        diagnosis = request.form.get("diagnosis")
-        treatment = request.form.get("treatment")
-        print(username, name, age, symptoms, diagnosis, treatment)
-        addData(username, age, symptoms, diagnosis, treatment, name)
+    # if (request.method == "POST"):
+    #     username = int(request.form.get("username"))
+    #     name = request.form.get("name")
+    #     age = int(request.form.get("age"))
+    #     symptoms = request.form.get("symptoms")
+    #     diagnosis = request.form.get("diagnosis")
+    #     treatment = request.form.get("treatment")
+    #     print(username, name, age, symptoms, diagnosis, treatment)
+    #     addData(username, age, symptoms, diagnosis, treatment, name)
     return render_template("success.html", file="style", title="Success")
 
-contract = runConstructor()
+# contract = runConstructor()
 
 @app.route("/allrecords", methods=["GET", "POST"])
 def allRecords():
-    if request.method == "POST":
-        username = int(request.form.get("username2"))
-        print(retrieveRecords(username))
+    # if request.method == "POST":
+    #     username = int(request.form.get("username2"))
+    #     print(retrieveRecords(username))
     return render_template("data.html", file="data", title="All Records")
 
 if __name__ == "__main__":
