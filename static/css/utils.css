@@ -1,0 +1,155 @@
+:root {
+    --black: #000000;
+    --dark: #161616;
+    --light: #f1f1f1;
+    --theme: #a060ff;
+    --theme-shadow: #a060ffaa;
+    --theme-dark: #781fff;
+    --theme-light: #f6f0ff;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "poppins", sans-serif;
+    scroll-behavior: smooth;
+}
+
+button {
+    cursor: pointer;
+}
+
+button,
+input {
+    outline: none;
+}
+
+section {
+    padding: 12vh 6vw;
+}
+
+.p-fixed {
+    position: fixed;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.fld-column {
+    flex-direction: column;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.jc-space {
+    justify-content: space-between;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-full {
+    height: 100vh;
+}
+
+.title {
+    color: var(--theme);
+    font-family: "dhurjati";
+}
+
+.head-text {
+    text-transform: uppercase;
+}
+
+.title,
+.head-text {
+    font-size: 2.7em;
+    font-weight: 700;
+}
+
+.input-form {
+    gap: 25px;
+}
+
+.input-box {
+    position: relative;
+}
+
+.input-field {
+    padding: 12px;
+    background: inherit;
+    border: 1px solid var(--theme);
+    border-radius: 5px;
+}
+
+.movable {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 3px;
+    background: var(--white);
+    color: var(--theme);
+    pointer-events: none;
+    transition: .3s;
+}
+
+.input-field,
+.movable {
+    font-size: .8em;
+    font-weight: 500;
+}
+
+.input-field:focus,
+.input-field:valid {
+    border-color: var(--theme);
+}
+
+.input-box i {
+    left: .8em;
+}
+
+.input-box label {
+    left: 2.2em;
+}
+
+.input-field:focus~.movable,
+.input-field:valid~.movable {
+    top: 0;
+    color: var(--theme);
+    font-size: .75em;
+}
+
+.btn {
+    background: var(--theme);
+    color: var(--white);
+}
+
+.extra {
+    font-size: .9em;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.visible {
+    opacity: 1;
+    pointer-events: all;
+    transition: .5s;
+}
+
+#cover {
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000b;
+    z-index: 500;
+}

@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div id="cover" class="p-fixed hidden"></div>
+
+<div class="container">
+    <div class="main">
+        <div class="main-top">
+            <h1>Hospital Dashboard</h1>
+        </div>
+        <div class="d-flex fld-column card">
+            <h4>{{name}}</h4>
+            <p>{{id}}</p>
+            <p>{{phone}}</p>
+            <p>{{email}}</p>
+            <p>{{website}}</p>
+
+            <div class="d-flex buttons">
+                <button id="addRecordButton" onclick="makeFormVisible()">Add Record</button>
+                <button id="retrieveDataButton" onclick="makeFormVisible2()">Retrieve Data</button>
+            </div>
+
+            <form action="/success" id="hform" method="post"
+                class="p-fixed d-flex fld-column w-100 input-form hform hidden">
+                <div class="w-100 input-box">
+                    <input type="text" name="username" id="username" class="w-100 input-field" autocomplete="off"
+                        required>
+                    <label for="username" class="movable">Patient Id</label>
+                </div>
+
+                <div class="w-100 input-box">
+                    <input type="text" name="name" id="name" class="w-100 input-field" required>
+                    <label for="name" class="movable">Hospital Name</label>
+                </div>
+
+                <div class="w-100 input-box">
+                    <input type="number" name="age" id="age" class="w-100 input-field" required>
+                    <label for="age" class="movable">Age</label>
+                </div>
+
+                <div class="w-100 input-box">
+                    <input type="text" id="symptoms" name="symptoms" class="w-100 input-field" required>
+                    <label for="symptoms" class="movable">Symptoms</label>
+                </div>
+
+                <div class="w-100 input-box">
+                    <input type="text" id="diagnosis" name="diagnosis" class="w-100 input-field" required>
+                    <label for="diagnosis" class="movable">Diagnosis</label>
+                </div>
+
+                <div class="w-100 input-box">
+                    <input type="text" id="treatment" name="treatment" class="w-100 input-field" required>
+                    <label for="treatment" class="movable">Treatment</label>
+                </div>
+
+                <button class="w-100 input-field btn">Add Record</button>
+            </form>
+
+            <form action="/allrecords" id="pform" method="post"
+                class="p-fixed d-flex fld-column w-100 input-form hform hidden">
+                <div class="w-100 input-box">
+                    <input type="text" name="username2" id="username2" class="w-100 input-field" autocomplete="off"
+                        required>
+                    <label for="username2" class="movable">Patient Id</label>
+                </div>
+                <button class="w-100 input-field btn">Retrieve Record</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cover = document.getElementById("cover")
+    const form2 = document.getElementById("pform")
+    const form = document.getElementById("hform")
+
+    let makeFormVisible = () => {
+        [form, cover].forEach(e => e.classList.toggle("visible"));
+    }
+
+    let makeFormVisible2 = () => {
+        [form2, cover].forEach(e => e.classList.toggle("visible"));
+    }
+</script>
+
+{% endblock %}

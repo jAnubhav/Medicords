@@ -1,0 +1,39 @@
+body {
+	display: grid;
+	place-items: center;
+	height: 100vh;
+	background: radial-gradient(var(--theme), var(--theme-dark));
+}
+
+.login_box {
+	width: 70%;
+	height: 80%;
+	margin: auto;
+	border-radius: 10px;
+	box-shadow: 1px 4px 22px #0004;
+	overflow: hidden;
+}
+
+.left {
+	width: 45%;
+	background: var(--white);
+}
+
+.right {
+	text-align: center;
+	width: 55%;
+	color: var(--white);
+	background:var(--theme-shadow) url("../img/logimg.jpg") center center no-repeat;
+	background-blend-mode: darken;
+	background-size: cover;
+}
+
+.signup-box {
+	width: 100%;
+	background: var(--white);
+}
+
+.left, .right, .signup-box {
+	height: 100%;
+	padding: 3vw;
+}

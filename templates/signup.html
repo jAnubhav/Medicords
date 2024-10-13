@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="d-flex login_box">
+    <div class="d-flex fld-column jc-center input-form signup-box">
+        <form action="/my_account" method="post" class="d-flex fld-column w-100 input-form">
+            <p class="title">Sign Up</p>
+
+            <div class="w-100 input-box">
+                <input type="text" name="name" class="w-100 input-field" autocomplete="off" required>
+                <i class="fas fa-user movable"></i>
+                <label for="log_username" class="movable">Full Name</label>
+            </div>
+            
+            <div class="w-100 input-box">
+                <input type="password" name="password" id="password" class="w-100 input-field" required>
+                <i class="fas fa-lock movable"></i>
+                <label for="log_password" class="movable">Password</label>
+            </div>
+
+            <button class="w-100 input-field btn">Sign Up</button>
+        </form>
+
+        <hr class="w-100">
+
+        <div class="d-flex jc-center extra">
+            <p>Don't have an account? <a href="./login">Log In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
