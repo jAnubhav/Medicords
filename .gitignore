@@ -5,3 +5,5 @@
 /hospital/node_modules
 
 /.env
+
+/data/private_key.json
