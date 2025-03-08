@@ -1,0 +1,12 @@
+[package]
+name = "manager"
+version = "1.0.0"
+authors = ["Anubhav Jain"]
+
+[addresses]
+Manager="0xd8ab603e3915bdaee254e4b6f4558c78a7b664625986a802cb40b00a30b60733"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "devnet"
+subdir = "aptos-framework"

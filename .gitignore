@@ -1,0 +1,7 @@
+/contracts/manager/build
+/contracts/client/build
+
+/client/node_modules
+/hospital/node_modules
+
+/.env
