@@ -1,5 +1,7 @@
 from aptos_sdk.account import Account
 from aptos_sdk.async_client import RestClient, FaucetClient
+from aptos_sdk.transactions import EntryFunction, TransactionArgument, TransactionPayload
+from aptos_sdk.bcs import Serializer
 
 from aptos_sdk.aptos_cli_wrapper import AptosCLIWrapper
 from aptos_sdk.package_publisher import PackagePublisher
@@ -21,30 +23,13 @@ faucet_client = FaucetClient(data["faucet_url"], rest_client)
 
 publisher = PackagePublisher(rest_client)
 
-'''
-The below function is only available for one time use to deploy the contract
-'''
-
-# async def publish_manager():
-#     await faucet_client.fund_account(address, 1_000_000_000)
-#     AptosCLIWrapper.compile_package(data["man_dir"], {})
-
-#     with open(f"{data["man_dir"]}{data["man_subdir"]}bytecode_modules/client.mv",
-#                 "rb") as f: module = f.read()
-    
-#     with open(f"{data["man_dir"]}{data["man_subdir"]}package-metadata.bcs",
-#                 "rb") as f: metadata = f.read()
-
-#     txn_hash = await PackagePublisher(rest_client)\
-#         .publish_package(account, metadata, [module])
-
-#     await rest_client.wait_for_transaction(txn_hash)
+cli_dir, cli_subdir = data["cli_dir"], data["cli_subdir"]
 
 async def publish_client():
     client = Account.generate(); cli_address = client.address()
-    await faucet_client.fund_account(cli_address, 100_000_000)
+    pri_key, pub_key = client.private_key, client.public_key()
 
-    cli_dir, cli_subdir = data["cli_dir"], data["cli_subdir"]
+    await faucet_client.fund_account(cli_address, 100_000_000)
 
     AptosCLIWrapper.compile_package(cli_dir, { "Account": cli_address })
 
@@ -56,9 +41,21 @@ async def publish_client():
     
     txn_hash = await publisher.publish_package(client, metadata, [module])
     await rest_client.wait_for_transaction(txn_hash)
+
+    payload = TransactionPayload(EntryFunction.natural(
+        f"{address}::client", "create_account", [], [
+            TransactionArgument(cli_address.__str__(), Serializer.str), 
+            TransactionArgument(pri_key.__str__(), Serializer.str),
+            TransactionArgument(pub_key.__str__(), Serializer.str)
+        ]
+    ))
     
-    print(txn_hash)
+    txn_req = await rest_client.create_bcs_signed_transaction(account, payload)
+    txn_hash = await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+
+async def client_publisher():
+    for _ in range(10): await publish_client()
 
 if __name__ == "__main__":
-    asy.run(publish_client())
-    pass
+    loop = asy.new_event_loop()
+    loop.run_until_complete(client_publisher())
