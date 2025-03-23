@@ -1,6 +1,7 @@
 {
   "name": "medicords",
   "version": "1.0.0",
+  "description": "A secure web-based application that harnesses blockchain technology to store and manage medical records, ensuring data integrity, privacy, and accessibility.",
   "type": "module",
   "scripts": {
     "start": "vite --host",
