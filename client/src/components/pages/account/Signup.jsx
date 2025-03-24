@@ -5,17 +5,17 @@ import Input from './elements/Input';
 
 import {
     UserContainer, UserContext
-} from '../../../contexts/UserContainer';
+} from '../../../contexts/UserContext';
 
 const InnerSignup = () => {
     const {
         fullName, setFullName,
-        aadharId, setAadharId,
+        aadharId, setAadharId_buf,
         password, setPassword,
         error, setError, handleRedirect
     } = useContext(UserContext);
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault(); setError('');
 
         if (!fullName.trim()) {
@@ -28,12 +28,33 @@ const InnerSignup = () => {
             return;
         }
 
+        if (aadharId.length != 14) {
+            setError('Please enter correct Aadhar ID');
+            return;
+        }
+
         if (!password) {
             setError('Please enter your password');
             return;
         }
 
-        console.log('Signup attempt with:', { fullName, aadharId, password });
+        const res = await fetch("http://127.0.0.1:5000/create-account", {
+            method: "POST", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({
+                fullName: fullName,
+                aadharId: aadharId,
+                password: password
+            })
+        }).then(data => data.json());
+
+        if (res.message == "Failure") {
+            setError("Account with this Aadhar Id exists");
+            setAadharId_buf("")
+        } else {
+            localStorage.setItem("auth-token", res.token);
+            handleRedirect("/dashboard")
+        }
     };
 
     return (
@@ -50,7 +71,7 @@ const InnerSignup = () => {
                     value={fullName} onChange={setFullName} placeholder="John Doe" />
 
                 <Input id="aadharId" label="Aadhar ID" type="text" autoComplete="off"
-                    value={aadharId} onChange={setAadharId} placeholder="XXXX XXXX XXXX" />
+                    value={aadharId} onChange={setAadharId_buf} placeholder="XXXX XXXX XXXX" />
 
                 <Input id="password" label="Password" type="password" autoComplete="new-password"
                     value={password} onChange={setPassword} placeholder="********" />

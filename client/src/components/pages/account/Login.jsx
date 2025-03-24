@@ -5,20 +5,25 @@ import Input from './elements/Input';
 
 import { 
     UserContainer, UserContext 
-} from '../../../contexts/UserContainer';
+} from '../../../contexts/UserContext';
 
 const InnerLogin = () => {
     const {
-        aadharId, setAadharId,
+        aadharId, setAadharId_buf,
         password, setPassword,
         error, setError, handleRedirect
     } = useContext(UserContext)
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault(); setError('');
 
         if (!aadharId.trim()) {
             setError('Please enter your Aadhar ID');
+            return;
+        }
+
+        if (aadharId.length != 14) {
+            setError('Please enter correct Aadhar ID');
             return;
         }
 
@@ -27,7 +32,23 @@ const InnerLogin = () => {
             return;
         }
 
-        console.log('Login attempt with:', { aadharId, password });
+        const res = await fetch("http://127.0.0.1:5000/sign-in", {
+            method: "POST", headers: {
+                "Content-Type": "application/json"
+            }, body: JSON.stringify({
+                aadharId: aadharId,
+                password: password
+            })
+        }).then(data => data.json());
+
+        if (res.message === "AadharId") {
+            setError("No Account with this Aadhar Id exists");
+        } else if (res.message === "Password") {
+            setError("Password is Incorrect");
+        }else {
+            localStorage.setItem("auth-token", res.token);
+            handleRedirect("/dashboard")
+        }
     };
 
     return (
@@ -40,7 +61,7 @@ const InnerLogin = () => {
                 )}
 
                 <Input id="aadharId" label="Aadhar ID" type="text" autoComplete="off"
-                    value={aadharId} onChange={setAadharId} placeholder="XXXX XXXX XXXX" />
+                    value={aadharId} onChange={setAadharId_buf} placeholder="XXXX XXXX XXXX" />
 
                 <Input id="password" label="Password" type="password" autoComplete="current-password"
                     value={password} onChange={setPassword} placeholder="********" />

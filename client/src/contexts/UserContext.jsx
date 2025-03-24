@@ -13,10 +13,21 @@ const UserContainer = ({ children }) => {
 
     const handleRedirect = link => navigate(link);
 
+    const setAadharId_buf = e => {
+        if (e.length > 14) return; let last = e[e.length - 1];
+
+        if (last != ' ' && (last < '0' || '9' < last)) return;
+
+        let inputValue = e.replace(/\s/g, "");
+        let formattedValue = inputValue.match(/.{1,4}/g)?.join(" ") || "";
+
+        setAadharId(formattedValue);
+    }
+
     return (
         <UserContext.Provider value={{
             fullName, setFullName,
-            aadharId, setAadharId,
+            aadharId, setAadharId_buf,
             password, setPassword,
             error, setError, handleRedirect
         }}>
