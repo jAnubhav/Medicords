@@ -7,3 +7,6 @@
 /.env
 
 /data/private_key.json
+/data/uri.json
+
+./trial.py
