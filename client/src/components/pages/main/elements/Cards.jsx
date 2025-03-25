@@ -2,7 +2,7 @@ const Card = ({ partner }) => {
     return (
         <div
             key={partner.id}
-            className="bg-gray-800 rounded-lg shadow-md overflow-hidden 
+            className="bg-gray-900 rounded-lg shadow-md overflow-hidden 
                     border border-gray-700 transform transition 
                     duration-300 hover:scale-105 hover:shadow-xl"
         >

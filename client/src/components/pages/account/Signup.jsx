@@ -7,13 +7,20 @@ import {
     UserContainer, UserContext
 } from '../../../contexts/UserContext';
 
+import {
+    CredContext
+} from '../../../contexts/CredContext';
+
 const InnerSignup = () => {
+    const {
+        error, setError, handleRedirect
+    } = useContext(UserContext);
+
     const {
         fullName, setFullName,
         aadharId, setAadharId_buf,
-        password, setPassword,
-        error, setError, handleRedirect
-    } = useContext(UserContext);
+        password, setPassword
+    } = useContext(CredContext);
 
     const handleSubmit = async e => {
         e.preventDefault(); setError('');
@@ -53,7 +60,10 @@ const InnerSignup = () => {
             setAadharId_buf("")
         } else {
             localStorage.setItem("auth-token", res.token);
-            handleRedirect("/dashboard")
+            sessionStorage.setItem("data", JSON
+                .stringify([fullName, aadharId]));
+                
+            handleRedirect("/dashboard");
         }
     };
 

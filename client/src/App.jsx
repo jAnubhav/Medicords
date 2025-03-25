@@ -1,6 +1,6 @@
 import React from "react";
 import {
-	BrowserRouter as Router, Routes, 
+	BrowserRouter as Router, Routes,
 	Route, useLocation, Navigate
 } from "react-router-dom";
 
@@ -13,6 +13,8 @@ import Affiliations from "./components/pages/main/Affiliations";
 import LoginPage from "./components/pages/account/Login";
 import SignupPage from "./components/pages/account/Signup";
 import Dashboard from "./components/pages/account/Dashboard";
+
+import { CredContainer } from "./contexts/CredContext";
 
 import { isAuth } from "./utility";
 
@@ -40,7 +42,11 @@ const InnerApp = () => {
 
 const App = () => {
 	return (
-		<Router> <InnerApp /> </Router>
+		<Router>
+			<CredContainer>
+				<InnerApp />
+			</CredContainer>
+		</Router>
 	);
 };
 

@@ -3,16 +3,23 @@ import React, { useContext } from 'react';
 import Button from './elements/Button';
 import Input from './elements/Input';
 
-import { 
-    UserContainer, UserContext 
+import {
+    UserContainer, UserContext
 } from '../../../contexts/UserContext';
+
+import {
+    CredContext
+} from '../../../contexts/CredContext';
 
 const InnerLogin = () => {
     const {
-        aadharId, setAadharId_buf,
-        password, setPassword,
         error, setError, handleRedirect
     } = useContext(UserContext)
+
+    const {
+        aadharId, setAadharId_buf,
+        password, setPassword
+    } = useContext(CredContext)
 
     const handleSubmit = async e => {
         e.preventDefault(); setError('');
@@ -45,9 +52,9 @@ const InnerLogin = () => {
             setError("No Account with this Aadhar Id exists");
         } else if (res.message === "Password") {
             setError("Password is Incorrect");
-        }else {
+        } else {
             localStorage.setItem("auth-token", res.token);
-            handleRedirect("/dashboard")
+            handleRedirect("/dashboard");
         }
     };
 

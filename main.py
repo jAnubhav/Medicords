@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 from bcrypt import hashpw, gensalt, checkpw
-from jwt import encode
+from jwt import encode, decode
 
 from json import load
 
@@ -59,6 +59,16 @@ def sign_in():
                     app.config["SECRET_KEY"], algorithm="HS256")
 
     return jsonify({"message": "Success", "token": auth_token})
+
+@app.route("/decode-token", methods=["POST"])
+def decode_token():
+    data = request.get_json(); token = data["token"]
+
+    aadharId = decode(token, app.config["SECRET_KEY"], 
+                      algorithms=["HS256"])["aadharId"]
+
+    return jsonify({"aadharId": aadharId, "fullName": User.query
+                    .filter_by(aadharId=aadharId).first().fullname})
 
 if __name__ == "__main__":
     app.run(debug=True)
