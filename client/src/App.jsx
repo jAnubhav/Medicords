@@ -6,18 +6,19 @@ import {
 
 import Navbar from "./components/Navbar";
 
-import Home from "./components/pages/Home";
-import Partners from "./components/pages/Partners";
-import Affiliations from "./components/pages/Affiliations";
+import Home from "./components/pages/main/Home";
+import Partners from "./components/pages/main/Partners";
+import Affiliations from "./components/pages/main/Affiliations";
 
 import LoginPage from "./components/pages/account/Login";
 import SignupPage from "./components/pages/account/Signup";
+import Dashboard from "./components/pages/account/Dashboard";
+
+import { isAuth } from "./utility";
 
 const InnerApp = () => {
 	const href = useLocation().pathname;
-	const accounts = ["/login", "/signup", "/dashboard"];
-
-	const isAuth = () => localStorage.getItem("auth-token");
+	const accounts = ["/login", "/signup"];
 
 	return (
 		<>
@@ -31,7 +32,7 @@ const InnerApp = () => {
 				<Route path="/login" element={isAuth() ? <Navigate to="/dashboard" /> : <LoginPage />} />
 				<Route path="/signup" element={isAuth() ? <Navigate to="/dashboard" /> : <SignupPage />} />
 
-				<Route path="/dashboard" element={(!isAuth()) ? <Navigate to="/" /> : <Home />} />
+				<Route path="/dashboard" element={(!isAuth()) ? <Navigate to="/" /> : <Dashboard />} />
 			</Routes>
 		</>
 	);
