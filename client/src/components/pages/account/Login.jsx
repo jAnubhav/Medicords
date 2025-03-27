@@ -11,6 +11,8 @@ import {
     CredContext
 } from '../../../contexts/CredContext';
 
+import { formatId } from '../../../utility';
+
 const InnerLogin = () => {
     const {
         error, setError, handleRedirect
@@ -43,7 +45,7 @@ const InnerLogin = () => {
             method: "POST", headers: {
                 "Content-Type": "application/json"
             }, body: JSON.stringify({
-                aadharId: aadharId,
+                aadharId: formatId(aadharId),
                 password: password
             })
         }).then(data => data.json());

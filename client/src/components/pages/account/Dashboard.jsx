@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 
 import { CredContext } from "../../../contexts/CredContext";
 
+
 const Dashboard = () => {
     const {
         fullName, setFullName,
@@ -19,14 +20,14 @@ const Dashboard = () => {
         }).then(data => data.json());
 
         sessionStorage.setItem("data", JSON.stringify(data));
-        setAadharId_buf(data["aadharId"]); setFullName(data["fullName"]);
+        setAadharId_buf(data[0]); setFullName(data[1]);
     }
 
     useEffect(() => {
         let data = JSON.parse(sessionStorage.getItem("data"));
 
-        if (data != null) { setAadharId_buf(data["aadharId"]);
-            setFullName(data["fullName"]); } else decodeToken();
+        if (data != null) { setAadharId_buf(data[0]);
+            setFullName(data[1]); } else decodeToken();
     }, []);
 
     return (

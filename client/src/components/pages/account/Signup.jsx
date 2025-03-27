@@ -11,6 +11,8 @@ import {
     CredContext
 } from '../../../contexts/CredContext';
 
+import { formatId } from '../../../utility';
+
 const InnerSignup = () => {
     const {
         error, setError, handleRedirect
@@ -50,7 +52,7 @@ const InnerSignup = () => {
                 "Content-Type": "application/json"
             }, body: JSON.stringify({
                 fullName: fullName,
-                aadharId: aadharId,
+                aadharId: formatId(aadharId),
                 password: password
             })
         }).then(data => data.json());
