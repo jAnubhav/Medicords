@@ -1,40 +1,31 @@
-module Account::client {
-    use std::string::String;
-    use aptos_std::signer;
+module Account::main {
+    use std::signer; use std::vector;
 
-    use std::vector;
-    use aptos_std::table;
-
-    struct Record has store, drop, copy {
-        date: String, symptoms: String,
-        diagnosis: String, treatment: String
-    }
+    use aptos_std::string::String;
+    use aptos_std::table::{Self, Table};
 
     struct RecManager has key {
-        records: table::Table<u32, vector<Record>>
+        records: Table<String, vector<u64>>
     }
 
     public entry fun create_manager(account: &signer) {
-        let manager = RecManager { records: table::new() }; 
-        move_to(account, manager);
+        let manager = RecManager {
+            records: table::new()
+        }; move_to(account, manager);
     }
 
     public entry fun add_record(
-        account: &signer, hospitalId: u32,
-        
-        date: String, symptoms: String,
-        diagnosis: String, treatment: String
+        account: &signer, 
+        client_id: String, record_id: u64
     ) acquires RecManager {
-        let manager = borrow_global_mut<
-            RecManager>(signer::address_of(account));
+        let manager = borrow_global_mut<RecManager>(
+            signer::address_of(account));
 
-        let new_acc = Record { date, symptoms, diagnosis, 
-            treatment }; let temp = vector::empty<Record>();
-
+        let temp = vector::empty<u64>();
         let records = table::borrow_with_default(
-            &manager.records, hospitalId, &temp);
+            &manager.records, client_id, &temp);
         
-        vector::push_back(&mut *(records), new_acc);
-        table::add(&mut manager.records, hospitalId, *records);
+        vector::push_back(&mut *(records), record_id);
+        table::add(&mut manager.records, client_id, *records);
     }
 }

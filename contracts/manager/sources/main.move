@@ -1,49 +1,68 @@
-module Manager::manager {
-    use std::signer;
-    use std::vector;
+module Account::main {
+    use std::signer; use std::vector;
 
-    use aptos_std::table;
-
-    struct Account has store, drop, copy {
-        account_address: vector<u8>,
-        private_key: vector<u8>,
-        public_key: vector<u8>
-    }
+    use aptos_std::string::String;
+    use aptos_std::table::{Self, Table};
 
     struct AccManager has key {
-        assigned: table::Table<u64, Account>,
-        unassigned: vector<Account>
+        available: vector<String>,
+        assigned: Table<String, String>
+    }
+
+    struct Record has store, copy, drop {
+        date: String, symptoms: String,
+        diagnosis: String, treatment: String
+    }
+
+    struct RecHolder has key {
+        records: Table<u64, Record>
     }
 
     public entry fun create_manager(account: &signer) {
-        let manager = AccManager {
-            assigned: table::new(),
-            unassigned: vector::empty()
-        };
+        let acc_manager = AccManager {
+            available: vector::empty(), 
+            assigned: table::new()
+        }; move_to(account, acc_manager);
 
-        move_to(account, manager);
+        let rec_holder = RecHolder {
+            records: table::new()
+        }; move_to(account, rec_holder);
     }
 
-    public entry fun create_account(
-        account: &signer, account_address: vector<u8>,
-        private_key: vector<u8>, public_key: vector<u8>
+    public entry fun add_account(
+        account: &signer, acc_address: String
     ) acquires AccManager {
-        let manager = borrow_global_mut<
-            AccManager>(signer::address_of(account));
+        let manager = borrow_global_mut<AccManager>(
+            signer::address_of(account));
 
-        let new_acc = Account {
-            account_address, private_key, public_key };
-
-        vector::push_back(&mut manager.unassigned, new_acc);
+        vector::push_back(&mut manager
+            .available, acc_address);
     }
 
     public entry fun assign_account(
-        account: &signer, aadhar_id: u64
+        account: &signer, client_id: String
     ) acquires AccManager {
-        let manager = borrow_global_mut<
-            AccManager>(signer::address_of(account));
+        let manager = borrow_global_mut<AccManager>(
+            signer::address_of(account));
 
-        table::upsert(&mut manager.assigned, aadhar_id,
-            vector::pop_back(&mut manager.unassigned));
+        table::upsert(&mut manager.assigned, client_id,
+            vector::pop_back(&mut manager.available));
+    }
+
+    public entry fun create_record(
+        account: &signer, record_id: u64,
+
+        date: String, symptoms: String,
+        diagnosis: String, treatment: String
+    ) acquires RecHolder {
+        let manager = borrow_global_mut<RecHolder>(
+            signer::address_of(account));
+
+        let record = Record {
+            date, symptoms, diagnosis, treatment
+        };
+
+        table::upsert(&mut manager
+            .records, record_id, record);
     }
 }

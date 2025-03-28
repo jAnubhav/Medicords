@@ -1,7 +1,0 @@
-{
-    "rest_url": "https://api.devnet.aptoslabs.com/v1",
-    "faucet_url": "https://faucet.devnet.aptoslabs.com",
-
-    "man_dir": "./contracts/manager/", "man_subdir": "./build/manager/", 
-    "cli_dir": "./contracts/client/", "cli_subdir": "./build/client/"
-}

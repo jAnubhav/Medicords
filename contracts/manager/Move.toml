@@ -3,9 +3,6 @@ name = "manager"
 version = "1.0.0"
 authors = ["Anubhav Jain"]
 
-[addresses]
-Manager="0x67e16bff7557eb6b6cdc6981c7c88809f3ff254bf45ed2461c4ac72c65cfb0ae"
-
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
 rev = "devnet"
