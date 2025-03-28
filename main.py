@@ -7,6 +7,9 @@ from bcrypt import hashpw, gensalt, checkpw
 from jwt import encode, decode
 
 from json import load
+import asyncio as asy
+
+from manager import assign_account, get_address, do_transaction
 
 with open("./data/uri.json", "r") as f:
     uri = load(f)["uri"]
@@ -19,8 +22,16 @@ db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = "anubhav"
 
+
+
+
+
+
+
+
+
 class User(db.Model):
-    aadharId = db.Column(db.String(14), primary_key=True)
+    aadharId = db.Column(db.String(12), primary_key=True)
     fullname = db.Column(db.String(30), nullable=False)
     password = db.Column(db.BLOB, nullable=False)
 
@@ -30,6 +41,12 @@ class User(db.Model):
 
     def check_pw(self, password):
         return checkpw(password.encode(), self.password)
+
+
+
+
+
+
 
 @app.route("/create-account", methods=["POST"])
 def create_account():
@@ -43,8 +60,19 @@ def create_account():
 
     auth_token = encode({"aadharId": aadharId}, 
                     app.config["SECRET_KEY"], algorithm="HS256")
-
+    
+    asy.run(assign_account(int(aadharId))); print("Account Created")
     return jsonify({"message": "Success", "token": auth_token})
+
+
+
+
+
+
+
+
+
+
 
 @app.route("/sign-in", methods=["POST"])
 def sign_in():
@@ -60,15 +88,49 @@ def sign_in():
 
     return jsonify({"message": "Success", "token": auth_token})
 
+
+
+
+
+
+
+
+
 @app.route("/decode-token", methods=["POST"])
 def decode_token():
     data = request.get_json(); token = data["token"]
 
     aadharId = decode(token, app.config["SECRET_KEY"], 
                       algorithms=["HS256"])["aadharId"]
+    
+    record = asy.run(get_address())["account_address"]
 
-    return jsonify({"aadharId": aadharId, "fullName": User.query
-                    .filter_by(aadharId=aadharId).first().fullname})
+    return jsonify({"cred":[aadharId, User.query.filter_by(
+        aadharId=aadharId).first().fullname], "rec":record})
+
+
+
+
+
+
+
+
+
+
+@app.route("/add-record", methods=["POST"])
+def add_record():
+    data = request.get_json()
+    asy.run(do_transaction(data))
+
+    return "Success"
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

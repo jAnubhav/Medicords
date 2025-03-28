@@ -5,6 +5,7 @@
 /hospital/node_modules
 
 /.env
+/__pycache__
 
 /data/private_key.json
 /data/uri.json

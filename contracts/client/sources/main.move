@@ -1,4 +1,4 @@
-module Account::records {
+module Account::client {
     use std::string::String;
     use aptos_std::signer;
 
@@ -6,7 +6,7 @@ module Account::records {
     use aptos_std::table;
 
     struct Record has store, drop, copy {
-        date: String, symptoms: vector<String>,
+        date: String, symptoms: String,
         diagnosis: String, treatment: String
     }
 
@@ -22,7 +22,7 @@ module Account::records {
     public entry fun add_record(
         account: &signer, hospitalId: u32,
         
-        date: String, symptoms: vector<String>,
+        date: String, symptoms: String,
         diagnosis: String, treatment: String
     ) acquires RecManager {
         let manager = borrow_global_mut<

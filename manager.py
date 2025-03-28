@@ -9,6 +9,8 @@ from aptos_sdk.package_publisher import PackagePublisher
 from json import load
 import asyncio as asy
 
+from datetime import datetime
+
 with open("./data/manager.json", "r") as f:
     data = load(f)
 
@@ -23,7 +25,51 @@ faucet_client = FaucetClient(data["faucet_url"], rest_client)
 
 publisher = PackagePublisher(rest_client)
 
+man_dir, man_subdir = data["man_dir"], data["man_subdir"]
 cli_dir, cli_subdir = data["cli_dir"], data["cli_subdir"]
+
+
+
+
+
+
+
+
+
+
+
+async def publish_manager():
+    await faucet_client.fund_account(address, 100_000_000)
+    AptosCLIWrapper.compile_package(man_dir, {})
+
+    with open(f"{man_dir}{man_subdir}bytecode_modules/manager.mv",
+                "rb") as f: module = f.read()
+    
+    with open(f"{man_dir}{man_subdir}package-metadata.bcs",
+                "rb") as f: metadata = f.read()
+    
+    txn_hash = await publisher.publish_package(account, metadata, [module])
+    await rest_client.wait_for_transaction(txn_hash)
+
+    payload = TransactionPayload(EntryFunction.natural(
+        f"{address}::manager", "create_manager", [], []
+    ))
+    
+    txn_req = await rest_client.create_bcs_signed_transaction(account, payload)
+    await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async def publish_client():
     client = Account.generate(); cli_address = client.address()
@@ -33,7 +79,7 @@ async def publish_client():
 
     AptosCLIWrapper.compile_package(cli_dir, { "Account": cli_address })
 
-    with open(f"{cli_dir}{cli_subdir}bytecode_modules/records.mv",
+    with open(f"{cli_dir}{cli_subdir}bytecode_modules/client.mv",
                 "rb") as f: module = f.read()
     
     with open(f"{cli_dir}{cli_subdir}package-metadata.bcs",
@@ -43,19 +89,108 @@ async def publish_client():
     await rest_client.wait_for_transaction(txn_hash)
 
     payload = TransactionPayload(EntryFunction.natural(
-        f"{address}::client", "create_account", [], [
-            TransactionArgument(cli_address.__str__(), Serializer.str), 
-            TransactionArgument(pri_key.__str__(), Serializer.str),
-            TransactionArgument(pub_key.__str__(), Serializer.str)
+        f"{address}::manager", "create_account", [], [
+            TransactionArgument(str(cli_address), Serializer.str), 
+            TransactionArgument(str(pri_key), Serializer.str),
+            TransactionArgument(str(pub_key), Serializer.str)
+        ]
+    ))
+
+    print(str(cli_address))
+    
+    txn_req = await rest_client.create_bcs_signed_transaction(account, payload)
+    await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+
+    payload = TransactionPayload(EntryFunction.natural(
+        f"{cli_address}::client", "create_manager", [], []
+    ))
+
+    txn_req = await rest_client.create_bcs_signed_transaction(client, payload)
+    await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+
+async def client_publisher():
+    for i in range(10): 
+        await publish_client()
+        print(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+async def assign_account(aadharId):
+    payload = TransactionPayload(EntryFunction.natural(
+        f"{address}::manager", "assign_account", [], [
+            TransactionArgument(aadharId, Serializer.u64)
         ]
     ))
     
     txn_req = await rest_client.create_bcs_signed_transaction(account, payload)
-    txn_hash = await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+    await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
 
-async def client_publisher():
-    for _ in range(10): await publish_client()
+
+
+
+
+
+
+
+
+
+
+
+async def get_address():
+    res = await rest_client.account_resource(
+        address, f"{address}::manager::AccManager")
+
+    handle = res["data"]["assigned"]["handle"]
+
+    return await rest_client.get_table_item(handle, "u64", 
+        f"{address}::manager::Account", "111111111111")
+    
+
+
+
+
+
+
+
+
+
+async def do_transaction(data):
+    acc_add, hospitalId, diagnosis, symptoms, treatment = data.values()
+    print(len(acc_add))
+    date = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    
+    payload = TransactionPayload(EntryFunction.natural(
+        f"{acc_add}::client", "add_record", [], [
+            TransactionArgument(int(hospitalId), Serializer.u32),
+            TransactionArgument(date, Serializer.str),
+            TransactionArgument(symptoms, Serializer.str),
+            TransactionArgument(diagnosis, Serializer.str),
+            TransactionArgument(treatment, Serializer.str)
+        ]
+    ))
+    
+    txn_req = await rest_client.create_bcs_signed_transaction(account, payload)
+    await rest_client.submit_and_wait_for_bcs_transaction(txn_req)
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
+    # asy.run(publish_manager())
     loop = asy.new_event_loop()
     loop.run_until_complete(client_publisher())

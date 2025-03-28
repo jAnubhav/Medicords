@@ -1,8 +1,8 @@
-module Manager::client {
+module Manager::manager {
     use std::signer;
+    use std::vector;
 
     use aptos_std::table;
-    use aptos_std::smart_vector;
 
     struct Account has store, drop, copy {
         account_address: vector<u8>,
@@ -12,13 +12,13 @@ module Manager::client {
 
     struct AccManager has key {
         assigned: table::Table<u64, Account>,
-        unassigned: smart_vector::SmartVector<Account>
+        unassigned: vector<Account>
     }
 
     public entry fun create_manager(account: &signer) {
         let manager = AccManager {
             assigned: table::new(),
-            unassigned: smart_vector::new()
+            unassigned: vector::empty()
         };
 
         move_to(account, manager);
@@ -34,7 +34,7 @@ module Manager::client {
         let new_acc = Account {
             account_address, private_key, public_key };
 
-        smart_vector::push_back(&mut manager.unassigned, new_acc);
+        vector::push_back(&mut manager.unassigned, new_acc);
     }
 
     public entry fun assign_account(
@@ -44,6 +44,6 @@ module Manager::client {
             AccManager>(signer::address_of(account));
 
         table::upsert(&mut manager.assigned, aadhar_id,
-            smart_vector::pop_back(&mut manager.unassigned));
+            vector::pop_back(&mut manager.unassigned));
     }
 }

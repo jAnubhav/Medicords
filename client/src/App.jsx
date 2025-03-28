@@ -6,13 +6,13 @@ import {
 
 import Navbar from "./components/Navbar";
 
-import Home from "./components/pages/main/Home";
-import Partners from "./components/pages/main/Partners";
-import Affiliations from "./components/pages/main/Affiliations";
+import Home from "./pages/main/Home";
+import Partners from "./pages/main/Partners";
+import Affiliations from "./pages/main/Affiliations";
 
-import LoginPage from "./components/pages/account/Login";
-import SignupPage from "./components/pages/account/Signup";
-import Dashboard from "./components/pages/account/Dashboard";
+import LoginPage from "./pages/account/Login";
+import SignupPage from "./pages/account/Signup";
+import Dashboard from "./pages/account/Dashboard";
 
 import { CredContainer } from "./contexts/CredContext";
 

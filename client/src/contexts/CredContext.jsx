@@ -7,6 +7,8 @@ const CredContainer = ({ children }) => {
     const [aadharId, setAadharId] = useState('');
     const [password, setPassword] = useState('');
 
+    const [accAdd, setAccAdd] = useState('');
+
     const setAadharId_buf = e => {
         if (e.length > 14) return; let last = e[e.length - 1];
 
@@ -22,7 +24,8 @@ const CredContainer = ({ children }) => {
         <CredContext.Provider value={{
             fullName, setFullName,
             aadharId, setAadharId_buf,
-            password, setPassword
+            password, setPassword,
+            accAdd, setAccAdd
         }}> {children} </CredContext.Provider>
     );
 };

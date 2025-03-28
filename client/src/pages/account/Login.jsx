@@ -5,32 +5,26 @@ import Input from './elements/Input';
 
 import {
     UserContainer, UserContext
-} from '../../../contexts/UserContext';
+} from '../../contexts/UserContext';
 
 import {
     CredContext
-} from '../../../contexts/CredContext';
+} from '../../contexts/CredContext';
 
-import { formatId } from '../../../utility';
+import { formatId } from '../../utility';
 
-const InnerSignup = () => {
+const InnerLogin = () => {
     const {
         error, setError, handleRedirect
-    } = useContext(UserContext);
+    } = useContext(UserContext)
 
     const {
-        fullName, setFullName,
         aadharId, setAadharId_buf,
         password, setPassword
-    } = useContext(CredContext);
+    } = useContext(CredContext)
 
     const handleSubmit = async e => {
         e.preventDefault(); setError('');
-
-        if (!fullName.trim()) {
-            setError('Please enter your full name');
-            return;
-        }
 
         if (!aadharId.trim()) {
             setError('Please enter your Aadhar ID');
@@ -47,31 +41,27 @@ const InnerSignup = () => {
             return;
         }
 
-        const res = await fetch("http://127.0.0.1:5000/create-account", {
+        const res = await fetch("http://127.0.0.1:5000/sign-in", {
             method: "POST", headers: {
                 "Content-Type": "application/json"
             }, body: JSON.stringify({
-                fullName: fullName,
                 aadharId: formatId(aadharId),
                 password: password
             })
         }).then(data => data.json());
 
-        if (res.message == "Failure") {
-            setError("Account with this Aadhar Id exists");
-            setAadharId_buf("")
+        if (res.message === "AadharId") {
+            setError("No Account with this Aadhar Id exists");
+        } else if (res.message === "Password") {
+            setError("Password is Incorrect");
         } else {
             localStorage.setItem("auth-token", res.token);
-            sessionStorage.setItem("data", JSON
-                .stringify([fullName, aadharId]));
-                
             handleRedirect("/dashboard");
         }
     };
 
     return (
         <>
-
             <form className="space-y-4">
                 {error && (
                     <div className="bg-red-500 text-white p-2 sm:p-3 rounded-md text-xs sm:text-sm">
@@ -79,16 +69,13 @@ const InnerSignup = () => {
                     </div>
                 )}
 
-                <Input id="fullname" label="Full Name" type="text" autoComplete="name"
-                    value={fullName} onChange={setFullName} placeholder="John Doe" />
-
                 <Input id="aadharId" label="Aadhar ID" type="text" autoComplete="off"
                     value={aadharId} onChange={setAadharId_buf} placeholder="XXXX XXXX XXXX" />
 
-                <Input id="password" label="Password" type="password" autoComplete="new-password"
+                <Input id="password" label="Password" type="password" autoComplete="current-password"
                     value={password} onChange={setPassword} placeholder="********" />
 
-                <Button onClick={handleSubmit} title="Create Account" type="submit" addClass=
+                <Button onClick={handleSubmit} title="Sign In" type="submit" addClass=
                     "border-transparent text-white bg-blue-600 hover:bg-blue-500" />
             </form>
 
@@ -99,24 +86,24 @@ const InnerSignup = () => {
                     </div>
                     <div className="relative flex justify-center text-xs sm:text-sm">
                         <span className="px-2 bg-gray-800 text-gray-300">
-                            Already have an account?
+                            New to Medicords?
                         </span>
                     </div>
                 </div>
 
-                <Button onClick={() => handleRedirect("/login")} title="Sign In Instead" type=
+                <Button onClick={() => handleRedirect("/signup")} title="Create a New Account" type=
                     "button" addClass="border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700" />
             </div>
         </>
     );
 };
 
-const SignupPage = () => {
+const LoginPage = () => {
     return (
         <UserContainer>
-            <InnerSignup />
+            <InnerLogin />
         </UserContainer>
     )
 }
 
-export default SignupPage;
+export default LoginPage;
