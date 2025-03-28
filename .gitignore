@@ -1,2 +1,4 @@
-/contracts/client/build
-/contracts/manager/build
+/blockchain/contracts/client/build
+/blockchain/contracts/manager/build
+
+/env
