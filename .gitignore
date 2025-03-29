@@ -1,4 +1,6 @@
 /blockchain/contracts/client/build
 /blockchain/contracts/manager/build
 
+/blockchain/private_key.py
+
 /env
