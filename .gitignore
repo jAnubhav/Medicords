@@ -3,4 +3,5 @@
 
 /blockchain/private_key.py
 
+/blockchain/__pycache__
 /env

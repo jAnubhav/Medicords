@@ -9,7 +9,7 @@ from private_key import key
 
 import asyncio as asy
 
-
+account = Account.load_key(key)
 
 # One-time function
 
@@ -17,24 +17,30 @@ async def publish_manager():
     '''
     This function will publish the Manager contract on the blockchain (Only once).
     '''
-    
-    acc, add = Account.load_key(key), acc.account_address
-    publish_contract(acc, add, man_dir, man_subdir)
+    await publish_contract(account, man_dir, man_subdir)
+    await entry_function(account, "create_manager", [])
 
-    await entry_function(acc, add, "manager", "create_manager", [])
-
-async def publish_client():
+async def publish_client(client):
     '''
-    This function will publish the Client contract continuously on the blockchain.
+    This function will publish the Client contract on the blockchain.
     '''
     
-    acc, add = Account.generate(), acc.account_address
-    publish_contract(acc, add, cli_dir, cli_subdir)
+    await publish_contract(client, cli_dir, cli_subdir)
     
-    await entry_function(acc, add, "manager", "add_account", [
-        TransactionArgument(encode_key(add), Serializer.str)])
+    await entry_function(account, "add_account", [TransactionArgument(
+        encode_key(str(client.account_address)), Serializer.str)])
 
-    await entry_function(acc, add, "client", "create_manager", [])
+    await entry_function(client, "create_manager", [])
 
 async def publish_clients():
-    pass
+    '''
+    This function will continuously publish the Client contract.
+    '''
+
+    for _ in range(10): await publish_client(Account.generate())
+
+if __name__ == "__main__":
+    # One-time Called
+    # asy.run(publish_manager())
+
+    asy.run(publish_clients())
