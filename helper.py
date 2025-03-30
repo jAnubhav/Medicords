@@ -46,6 +46,9 @@ async def entry_function(account: Account, func_name: str, args: list[any]) -> N
     await rest_client.submit_and_wait_for_bcs_transaction(await 
         rest_client.create_bcs_signed_transaction(account, pay))
 
+async def get_account_resource(address, res_type: str):
+    res = await rest_client.account_resource(address, f"{address}::main::{res_type}")
+    print(res)
 
 
 ### Normal Functions
@@ -64,9 +67,16 @@ def decode_key(key: str) -> str:
 
     return "0x" + "".join(hex(ord(c))[2:] for c in key)
 
-def generate_token(app, aadharId):
+def generate_token(secret_key: str, aadharId: str):
     '''
     This function will generate the Authentication Token.
     '''
     
-    return encode({ "aadharId": aadharId }, app.config["SECRET_KEY"], algorithm="HS256")
+    return encode({ "aadharId": aadharId }, secret_key, algorithm="HS256")
+
+def decode_token(secret_key: str, token: str):
+    '''
+    This function will decode the Authentication Token.
+    '''
+    
+    return decode(token, secret_key, algorithms=["HS256"])["aadharId"]

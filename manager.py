@@ -2,7 +2,7 @@ from aptos_sdk.account import Account
 from aptos_sdk.transactions import TransactionArgument
 from aptos_sdk.bcs import Serializer
 
-from helper import publish_contract, entry_function, encode_key
+from helper import publish_contract, entry_function, encode_key, get_account_resource
 
 from data import man_dir, man_subdir, cli_dir, cli_subdir
 from private_data import key
@@ -10,7 +10,7 @@ from private_data import key
 import asyncio as asy
 
 account = Account.load_key(key)
-
+address = account.account_address
 
 
 ### Contract related Functions
@@ -55,3 +55,11 @@ if __name__ == "__main__":
     # asy.run(publish_manager())
 
     asy.run(publish_clients())
+
+
+async def get_accout_data(aadharId: str):
+    res = await get_account_resource(address, "AccManager")
+    handle = res["data"]["assigned"]["handle"]
+
+    
+    pass

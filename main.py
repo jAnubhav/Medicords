@@ -9,9 +9,9 @@ from flask_sqlalchemy import SQLAlchemy
 from bcrypt import hashpw, gensalt, checkpw
 import asyncio as asy
 
-from manager import assign_account
+from manager import assign_account, get_accout_data
 
-from helper import generate_token
+from helper import generate_token, decode_token
 from private_data import uri, secret_key
 
 app = Flask("Medicords"); CORS(app);
@@ -72,7 +72,20 @@ def create_account():
     asy.run(assign_account(aadharId))
 
     db.session.add(Patients(**data)); db.session.commit()
-    return jsonify({"msg": generate_token(app, aadharId)})
+    return jsonify({"msg": generate_token(secret_key, aadharId)})
+
+@app.route("/get-data", methods=["POST"])
+def get_data():
+    '''
+    The API for decoding the Token and sending user credentials and medical data
+    '''
+
+    aadharId = decode_token(secret_key, request.get_json()["token"])
+    print(aadharId);
+
+    asy.run(get_accout_data(aadharId))
+    
+    return aadharId;
 
 if __name__ == "__main__":
     app.run(debug=True)
