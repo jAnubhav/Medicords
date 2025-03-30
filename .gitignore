@@ -1,7 +1,8 @@
-/blockchain/contracts/client/build
-/blockchain/contracts/manager/build
+/contracts/client/build
+/contracts/manager/build
 
-/blockchain/private_key.py
-
-/blockchain/__pycache__
+/private_data.py
+/__pycache__
 /env
+
+/frontend/patient/node_modules

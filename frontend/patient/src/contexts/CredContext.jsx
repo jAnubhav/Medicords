@@ -7,20 +7,30 @@ const CredContainer = ({ children }) => {
         aadharId: '', fullName: '', password: '',
     });
 
-    const handleChange = e => {
-        const { name, value, type, checked } = e.target;
+    const [isAuth, setIsAuth] = useState(localStorage.getItem("token"));
 
-        if (name === 'aadharId' && value.length > 12) return;
-        if (name === 'aadharId' && !/^\d*$/.test(value)) return;
+    const handleChange = e => {
+        let { name, value, type, checked } = e.target;
+
+        if (name === "aadharId") {
+            value = value.replace(/\D/g, ""); if (value.length > 12) return;
+            let formattedValue = value.replace(/(\d{4})/g, "$1 ").trim();
+    
+            setFormData({ ...formData, [name]: formattedValue }); return;
+        }
 
         setFormData({
             ...formData, [name]: type === 'checkbox' ? checked : value
         });
     };
 
+    const shortenId = aadharId => aadharId.substring(0, 4) +
+        aadharId.substring(5, 9) + aadharId.substring(10, 14);
+
     return (
         <CredContext.Provider value={{
-            formData, handleChange
+            formData, handleChange, 
+            shortenId, isAuth, setIsAuth
         }}> {children} </CredContext.Provider>
     );
 };

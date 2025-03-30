@@ -1,20 +1,20 @@
-import React, { useContext} from 'react';
+import React, { useContext } from 'react';
 
-import { Input, Button, Switch } from './Elements';
+import { Input, Button } from './Elements';
 
 import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const LoginPage = () => {
-    const { formData } = useContext(CredContext)
-    const { errors, setErrors } = useContext(UserContext);
+    const { formData, shortenId, setIsAuth } = useContext(CredContext)
+    const { errors, setErrors, nav } = useContext(UserContext);
 
     const validateForm = () => {
         const newErrors = {};
 
         if (!formData.aadharId) {
             newErrors.aadharId = 'Aadhar ID is required';
-        } else if (formData.aadharId.length !== 12) {
+        } else if (formData.aadharId.length !== 14) {
             newErrors.aadharId = 'Aadhar ID must be exactly 12 digits';
         }
 
@@ -29,12 +29,24 @@ const LoginPage = () => {
         setErrors(newErrors); return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    const handleSubmit = async e => {
+        e.preventDefault(); if (!validateForm()) return;
+        const newErrors = {}, aadharId = shortenId(formData.aadharId);
 
-        if (validateForm()) {
-            console.log('Form submitted:', formData);
+        const res = await fetch("http://localhost:5000/login", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...formData, "aadharId": aadharId })
+        }).then(data => data.json());
+
+        if (res["msg"] === "AadharId") {
+            newErrors.aadharId = 'No Account with this Aadhar ID exists';
+            setErrors(newErrors); return;
+        } else if (res["msg"] === "Password") {
+            newErrors.password = 'Incorrect Password';
+            setErrors(newErrors); return;
         }
+
+        localStorage.setItem("token", res["msg"]); setIsAuth(true); nav("/");
     };
 
     return (
@@ -47,8 +59,8 @@ const LoginPage = () => {
                     label="Password" value={formData.password} error={errors.password} />
             </div>
 
-            <Button handleSubmit={handleSubmit} text="Sign In" />
-            <Switch text="Don't have an account?" link="/sign-up" holder="Register here" />
+            <Button handleSubmit={handleSubmit} text="Sign In" place="Don't have an account?"
+                link="/signup" holder="Register here" />
         </form>
     );
 };

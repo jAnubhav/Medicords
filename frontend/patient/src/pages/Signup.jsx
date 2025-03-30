@@ -1,20 +1,20 @@
 import React, { useContext } from 'react';
 
-import { Input, Button, Switch } from './Elements';
+import { Input, Button } from './Elements';
 
 import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = () => {
-    const { formData } = useContext(CredContext);
-    const { errors, setErrors } = useContext(UserContext);
+    const { formData, shortenId, setIsAuth } = useContext(CredContext);
+    const { errors, setErrors, nav } = useContext(UserContext);
 
     const validateForm = () => {
         const newErrors = {};
 
         if (!formData.aadharId) {
             newErrors.aadharId = 'Aadhar ID is required';
-        } else if (formData.aadharId.length !== 12) {
+        } else if (formData.aadharId.length !== 14) {
             newErrors.aadharId = 'Aadhar ID must be exactly 12 digits';
         }
 
@@ -35,12 +35,23 @@ const SignupPage = () => {
         setErrors(newErrors); return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    const handleSubmit = async e => {
+        e.preventDefault(); if (!validateForm()) return;
+        const newErrors = {};
 
-        if (validateForm()) {
-            console.log('Form submitted:', formData);
+        const res = await fetch("http://localhost:5000/signup", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+                { ...formData, "aadharId": shortenId(formData.aadharId) }
+            )
+        }).then(data => data.json());
+
+        if (res["msg"] === "Failure") {
+            newErrors.aadharId = 'Account with this Aadhar ID exists';
+            setErrors(newErrors); return;
         }
+
+        localStorage.setItem("token", res["msg"]); setIsAuth(true); nav("/");
     };
 
     return (
@@ -56,8 +67,8 @@ const SignupPage = () => {
                     label="Password" value={formData.password} error={errors.password} />
             </div>
 
-            <Button handleSubmit={handleSubmit} text="Create Account" />
-            <Switch text="Already have an account?" link="/log-in" holder="Sign in here" />
+            <Button handleSubmit={handleSubmit} text="Create Account" place="Already have an account?"
+                link="/login" holder="Sign in here" />
         </form>
     );
 };
