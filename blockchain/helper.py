@@ -42,14 +42,6 @@ async def entry_function(account, func_name, args):
     
     await rest_client.submit_and_wait_for_bcs_transaction(await 
         rest_client.create_bcs_signed_transaction(account, pay))
-    
-async def get_address(address):
-    res = await rest_client.account_resource(
-        address, f"{address}::main::AccManager")
-    
-    print(decode_key(res["data"]["available"][2]))
-
-
 
 # Normal functions
 
