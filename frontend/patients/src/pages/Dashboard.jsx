@@ -12,7 +12,9 @@ const Dashboard = () => {
                 }, body: JSON.stringify({ "token": token })
             }).then(data => data.json());
 
-            setFormData({...res["cred"]}); setRecords(res["records"]);
+            setFormData({ ...res["cred"] }); setRecords(res["records"]);
+
+            console.log(res)
         }
 
         fetchData()

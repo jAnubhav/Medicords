@@ -18,7 +18,7 @@ const SignupPage = () => {
             body: JSON.stringify(
                 { ...formData, "aadharId": shortenId(formData.aadharId) }
             )
-        }).then(data => data.json());
+        }).then(data => data.text());
 
         if (res === "Failure") {
             newErrors.aadharId = 'Account with this Aadhar ID exists';
