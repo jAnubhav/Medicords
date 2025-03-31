@@ -53,11 +53,11 @@ def sign_in():
     data = request.get_json(); aadharId = data["aadharId"]
     user = Patients.query.filter_by(aadharId=aadharId).first()
 
-    if (not user): return jsonify({"msg": "AadharId"})
+    if (not user): return "AadharId"
     elif (not user.check_pw(data["password"])): 
-        return jsonify({"msg": "Password"})
+        return "Password"
     
-    return jsonify({"msg": generate_token(app, aadharId)})
+    return generate_token(secret_key, aadharId)
 
 @app.route("/signup", methods=["POST"])
 def create_account():
@@ -68,11 +68,10 @@ def create_account():
     data = request.get_json(); aadharId = data["aadharId"]
     user = Patients.query.filter_by(aadharId=aadharId).first()
 
-    if (user): return jsonify({"msg": "Failure"})
-    asy.run(assign_account(aadharId))
+    if (user): return "Failure"; asy.run(assign_account(aadharId))
 
     db.session.add(Patients(**data)); db.session.commit()
-    return jsonify({"msg": generate_token(secret_key, aadharId)})
+    return generate_token(secret_key, aadharId)
 
 @app.route("/get-data", methods=["POST"])
 def get_data():
@@ -81,9 +80,7 @@ def get_data():
     '''
 
     aadharId = decode_token(secret_key, request.get_json()["token"])
-    print(aadharId);
-
-    asy.run(get_accout_data(aadharId))
+    res = asy.run(get_accout_data(aadharId))
     
     return aadharId;
 

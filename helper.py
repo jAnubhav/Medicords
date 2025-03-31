@@ -47,8 +47,19 @@ async def entry_function(account: Account, func_name: str, args: list[any]) -> N
         rest_client.create_bcs_signed_transaction(account, pay))
 
 async def get_account_resource(address, res_type: str):
-    res = await rest_client.account_resource(address, f"{address}::main::{res_type}")
-    print(res)
+    '''
+    This function will return the Account Resource based on the Account Address.
+    '''
+
+    return await rest_client.account_resource(address, f"{address}::main::{res_type}")
+
+async def get_table_item(handle: str, key_type: str, value_type: str, key: str):
+    '''
+    This function will return the Table Item from an Account.
+    '''
+    
+    return await rest_client.get_table_item(handle, key_type, value_type, key)
+
 
 
 ### Normal Functions
@@ -65,7 +76,7 @@ def decode_key(key: str) -> str:
     This function will decode the given Account Address.
     '''
 
-    return "0x" + "".join(hex(ord(c))[2:] for c in key)
+    return "0x" + "".join(hex(ord(c))[2:].zfill(2) for c in key)
 
 def generate_token(secret_key: str, aadharId: str):
     '''
@@ -79,4 +90,4 @@ def decode_token(secret_key: str, token: str):
     This function will decode the Authentication Token.
     '''
     
-    return decode(token, secret_key, algorithms=["HS256"])["aadharId"]
+    return decode(token.encode(), secret_key, algorithms=["HS256"])["aadharId"]

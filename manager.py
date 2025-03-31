@@ -2,7 +2,7 @@ from aptos_sdk.account import Account
 from aptos_sdk.transactions import TransactionArgument
 from aptos_sdk.bcs import Serializer
 
-from helper import publish_contract, entry_function, encode_key, get_account_resource
+from helper import *
 
 from data import man_dir, man_subdir, cli_dir, cli_subdir
 from private_data import key
@@ -47,19 +47,28 @@ async def publish_clients() -> None:
 ### Assignment and Record Creation Functions
 
 async def assign_account(aadharId: str) -> None:
+    '''
+    This function calls the "Assign Account" function in the Manager Contract.
+    '''
+
     await entry_function(account, "assign_account", [
         TransactionArgument("PA_" + aadharId, Serializer.str)])
+
+async def get_accout_data(aadharId: str):
+    '''
+    This function will return the account resources from the blockchain.
+    '''
+
+    handle = await get_account_resource(address, "AccManager")["data"]["assigned"]["handle"]
+    k_type = "0x1::string::String"
+    
+    return await get_account_resource(decode_key(await get_table_item(
+        handle, k_type, k_type, "PA_" + aadharId)), "RecManager")["data"]["records"]
+
+
 
 if __name__ == "__main__":
     # One-time Called
     # asy.run(publish_manager())
 
     asy.run(publish_clients())
-
-
-async def get_accout_data(aadharId: str):
-    res = await get_account_resource(address, "AccManager")
-    handle = res["data"]["assigned"]["handle"]
-
-    
-    pass
