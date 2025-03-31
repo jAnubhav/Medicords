@@ -32,13 +32,13 @@ const SignupPage = () => {
         <form className="space-y-6">
             <div className="space-y-4">
                 <Input id="fullName" type="text" placeholder="Anubhav Jain"
-                    label="Full Name" value={formData.fullName} error={errors.fullName} />
+                    label="Full Name" inpValue={formData.fullName} error={errors.fullName} />
 
                 <Input id="aadharId" type="text" placeholder="XXXX XXXX XXXX"
-                    label="Aadhar Id" value={formData.aadharId} error={errors.aadharId} />
+                    label="Aadhar Id" inpValue={formData.aadharId} error={errors.aadharId} />
 
                 <Input id="password" type="password" placeholder="********"
-                    label="Password" value={formData.password} error={errors.password} />
+                    label="Password" inpValue={formData.password} error={errors.password} />
             </div>
 
             <Button handleSubmit={handleSubmit} text="Create Account" place="Already have an account?"

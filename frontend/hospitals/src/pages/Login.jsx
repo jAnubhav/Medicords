@@ -7,39 +7,21 @@ import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const LoginPage = () => {
     const { formData, shortenId, setToken } = useContext(CredContext)
-    const { errors, setErrors, nav } = useContext(UserContext);
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!formData.aadharId) {
-            newErrors.aadharId = 'Aadhar ID is required';
-        } else if (formData.aadharId.length !== 14) {
-            newErrors.aadharId = 'Aadhar ID must be exactly 12 digits';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Password must be at least 8 characters';
-        } else if (formData.password.length > 20) {
-            newErrors.password = 'Password cannot exceed 20 characters';
-        }
-
-        setErrors(newErrors); return Object.keys(newErrors).length === 0;
-    };
+    const { errors, setErrors, nav, validateForm } = useContext(UserContext);
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
-        const newErrors = {}, aadharId = shortenId(formData.aadharId);
+        const newErrors = {};
 
-        const res = await fetch("http://localhost:5000/login", {
+        const res = await fetch("http://localhost:5000/hospital-login", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...formData, "aadharId": aadharId })
+            body: JSON.stringify(
+                { ...formData, "nationalId": shortenId(formData.nationalId) }
+            )
         }).then(data => data.text());
 
-        if (res === "AadharId") {
-            newErrors.aadharId = 'No Account with this Aadhar ID exists';
+        if (res === "NationalId") {
+            newErrors.nationalId = 'No Account with this National ID exists';
             setErrors(newErrors); return;
         } else if (res === "Password") {
             newErrors.password = 'Incorrect Password';
@@ -52,11 +34,11 @@ const LoginPage = () => {
     return (
         <form className="space-y-6">
             <div className="space-y-4">
-                <Input id="aadharId" type="text" placeholder="XXXX XXXX XXXX"
-                    label="Aadhar Id" value={formData.aadharId} error={errors.aadharId} />
+                <Input id="nationalId" type="text" placeholder="XXXXX XXXXX"
+                    label="National Id" inpValue={formData.nationalId} error={errors.nationalId} />
 
                 <Input id="password" type="password" placeholder="********"
-                    label="Password" value={formData.password} error={errors.password} />
+                    label="Password" inpValue={formData.password} error={errors.password} />
             </div>
 
             <Button handleSubmit={handleSubmit} text="Sign In" place="Don't have an account?"
