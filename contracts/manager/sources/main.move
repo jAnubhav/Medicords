@@ -10,8 +10,7 @@ module Account::main {
     }
 
     struct Record has store, copy, drop {
-        holder: String, date: String, symptoms: String,
-        diagnosis: String, treatment: String
+        symptoms: String, diagnosis: String, treatment: String
     }
 
     struct RecHolder has key {
@@ -52,17 +51,12 @@ module Account::main {
     public entry fun create_record(
         account: &signer, record_id: u64,
 
-        holder: String, date: String, symptoms: String,
-        diagnosis: String, treatment: String
+        symptoms: String, diagnosis: String, treatment: String
     ) acquires RecHolder {
         let manager = borrow_global_mut<RecHolder>(
             signer::address_of(account));
 
-        let record = Record {
-            holder, date, symptoms, diagnosis, treatment
-        };
-
-        table::upsert(&mut manager
-            .records, record_id, record);
+        let record = Record { symptoms, diagnosis, treatment };
+        table::upsert(&mut manager.records, record_id, record);
     }
 }
