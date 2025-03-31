@@ -6,7 +6,7 @@ import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const LoginPage = () => {
-    const { formData, shortenId, setIsAuth } = useContext(CredContext)
+    const { formData, shortenId, setToken } = useContext(CredContext)
     const { errors, setErrors, nav } = useContext(UserContext);
 
     const validateForm = () => {
@@ -36,17 +36,17 @@ const LoginPage = () => {
         const res = await fetch("http://localhost:5000/login", {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ...formData, "aadharId": aadharId })
-        }).then(data => data.json());
+        }).then(data => data.text());
 
-        if (res["msg"] === "AadharId") {
+        if (res === "AadharId") {
             newErrors.aadharId = 'No Account with this Aadhar ID exists';
             setErrors(newErrors); return;
-        } else if (res["msg"] === "Password") {
+        } else if (res === "Password") {
             newErrors.password = 'Incorrect Password';
             setErrors(newErrors); return;
         }
 
-        localStorage.setItem("token", res["msg"]); setIsAuth(true); nav("/");
+        localStorage.setItem("token", res); setToken(res); nav("/");
     };
 
     return (

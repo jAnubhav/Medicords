@@ -15,14 +15,14 @@ import {
 } from "./contexts/CredContext";
 
 const InnerApp = () => {
-	const { isAuth } = useContext(CredContext)
+	const { token } = useContext(CredContext)
 
 	return (
 		<Routes>
-			<Route path="/" element={isAuth ? <Dashboard /> : <Navigate to="/login" />} />
+			<Route path="/" element={token ? <Dashboard /> : <Navigate to="/login" />} />
 
-			<Route path="/login" element={isAuth ? <Navigate to="/" /> : <Login />} />
-			<Route path="/signup" element={isAuth ? <Navigate to="/" /> : <Signup />} />
+			<Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
+			<Route path="/signup" element={token ? <Navigate to="/" /> : <Signup />} />
 		</Routes>
 	);
 };

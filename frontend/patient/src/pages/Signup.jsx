@@ -6,7 +6,7 @@ import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = () => {
-    const { formData, shortenId, setIsAuth } = useContext(CredContext);
+    const { formData, shortenId, setToken } = useContext(CredContext);
     const { errors, setErrors, nav } = useContext(UserContext);
 
     const validateForm = () => {
@@ -46,12 +46,12 @@ const SignupPage = () => {
             )
         }).then(data => data.json());
 
-        if (res["msg"] === "Failure") {
+        if (res === "Failure") {
             newErrors.aadharId = 'Account with this Aadhar ID exists';
             setErrors(newErrors); return;
         }
 
-        localStorage.setItem("token", res["msg"]); setIsAuth(true); nav("/");
+        localStorage.setItem("token", res); setToken(res); nav("/");
     };
 
     return (
