@@ -13,8 +13,6 @@ const Dashboard = () => {
             }).then(data => data.json());
 
             setFormData({ ...res["cred"] }); setRecords(res["records"]);
-
-            console.log(res)
         }
 
         fetchData()

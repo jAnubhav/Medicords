@@ -10,8 +10,7 @@ const CredContainer = ({ children }) => {
     const [records, setRecords] = useState([]);
     const [token, setToken] = useState(localStorage.getItem("token"));
 
-    const shortenId = aadharId => aadharId.substring(0, 4) +
-        aadharId.substring(5, 9) + aadharId.substring(10, 14);
+    const shortenId = aadharId => aadharId.replace(/\s+/g, "");
 
     return (
         <CredContext.Provider value={{
