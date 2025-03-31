@@ -78,16 +78,16 @@ def decode_key(key: str) -> str:
 
     return "0x" + "".join(hex(ord(c))[2:].zfill(2) for c in key)
 
-def generate_token(secret_key: str, aadharId: str):
+def generate_token(secret_key: str, key: str, value: str):
     '''
     This function will generate the Authentication Token.
     '''
     
-    return encode({ "aadharId": aadharId }, secret_key, algorithm="HS256")
+    return encode({ key: value }, secret_key, algorithm="HS256")
 
-def decode_token(secret_key: str, token: str):
+def decode_token(secret_key: str, key: str, token: str):
     '''
     This function will decode the Authentication Token.
     '''
     
-    return decode(token.encode(), secret_key, algorithms=["HS256"])["aadharId"]
+    return decode(token.encode(), secret_key, algorithms=["HS256"])[key]

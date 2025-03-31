@@ -45,24 +45,24 @@ async def publish_clients() -> None:
 
 
 ### Assignment and Record Creation Functions
-
-async def assign_account(aadharId: str) -> None:
+    
+async def assign_account(iden: str) -> None:
     '''
     This function calls the "Assign Account" function in the Manager Contract.
     '''
 
-    await entry_function(account, "assign_account", [
-        TransactionArgument("PA_" + aadharId, Serializer.str)])
+    await entry_function(account, "assign_account", 
+                         [TransactionArgument(iden, Serializer.str)])
 
-async def get_accout_data(aadharId: str):
+async def get_data(iden: str):
     '''
     This function will return the account resources from the blockchain.
     '''
 
-    k, acc = "0x1::string::String", await get_account_resource(address, "AccManager")
+    data = await get_account_resource(address, "AccManager")
 
-    add = decode_key(await get_table_item(acc[
-        "data"]["assigned"]["handle"], k, k, "PA_" + aadharId))
+    add = decode_key(await get_table_item(data["data"]["assigned"]["handle"], 
+        "0x1::string::String", "0x1::string::String", iden))
     
     return (await get_account_resource(add, "RecManager"))["data"]["records"]
 

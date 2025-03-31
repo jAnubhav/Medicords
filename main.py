@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bcrypt import hashpw, gensalt, checkpw
 import asyncio as asy
 
-from manager import assign_account, get_accout_data
+from manager import assign_account, get_data
 
 from helper import generate_token, decode_token
 from private_data import uri, secret_key
@@ -19,6 +19,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = uri
 db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = secret_key
+
+
+
+### Patients Table ORM
 
 class Patients(db.Model):
     '''
@@ -55,10 +59,51 @@ class Patients(db.Model):
         }
 
 
-@app.route("/login", methods=["POST"])
-def sign_in():
+
+### Hospitals Table ORM
+
+class Hospitals(db.Model):
     '''
-    The API for handling Login requests.
+    This is the ORM for MySQL DataBase table Hospitals.
+    '''
+    
+    nationalId = Column(String(10), primary_key=True)
+    hospitalName = Column(String(30), nullable=False)
+    password = Column(BLOB, nullable=False)
+    
+    def __init__(self, nationalId, hospitalName, password):
+        '''
+        It assigns the values to the fiels of the ORM.
+        '''
+        
+        self.nationalId, self.hospitalName = nationalId, hospitalName
+        self.password = hashpw(password.encode(), gensalt())
+
+    def check_pw(self, password):
+        '''
+        It checks whether the password entered matches or not.
+        '''
+        
+        return checkpw(password.encode(), self.password)
+    
+    def get_data(self):
+        '''
+        Returns the hospital details as a dictionary.
+        '''
+
+        return {
+            "nationalId": self.nationalId,
+            "hospitalName": self.hospitalName
+        }
+    
+
+
+### Patient Interaction Functions
+
+@app.route("/patient-login", methods=["POST"])
+def patient_login():
+    '''
+    The API for handling Patient Login requests.
     '''
     
     data = request.get_json(); aadharId = data["aadharId"]
@@ -68,33 +113,82 @@ def sign_in():
     elif (not user.check_pw(data["password"])): 
         return "Password"
     
-    return generate_token(secret_key, aadharId)
+    return generate_token(secret_key, "aadharId", aadharId)
 
-@app.route("/signup", methods=["POST"])
-def create_account():
+@app.route("/patient-signup", methods=["POST"])
+def patient_signup():
     '''
-    The API for handling Signup requests. It also assigns a blockchain account to the patient.
+    The API for handling Patient Signup requests. It also assigns a blockchain account to the patient.
     '''
     
     data = request.get_json(); aadharId = data["aadharId"]
     user = Patients.query.filter_by(aadharId=aadharId).first()
 
-    if (user): return "Failure"; asy.run(assign_account(aadharId))
+    if (user): return "Failure"
+    asy.run(assign_account("PT_" + aadharId))
 
     db.session.add(Patients(**data)); db.session.commit()
-    return generate_token(secret_key, aadharId)
+    return generate_token(secret_key, "aadharId", aadharId)
 
-@app.route("/get-data", methods=["POST"])
-def get_data():
+@app.route("/get-patient-data", methods=["POST"])
+def get_patient_data():
     '''
-    The API for decoding the Token and sending user credentials and medical data
+    The API for decoding the Token and sending patient credentials and medical data.
     '''
 
-    aadharId = decode_token(secret_key, request.get_json()["token"])
+    aadharId = decode_token(secret_key, "aadharId", request.get_json()["token"])
     user = Patients.query.filter_by(aadharId=aadharId).first()
     
-    records = asy.run(get_accout_data(aadharId))
+    records = asy.run(get_data("PT_" + aadharId))
     return jsonify({"cred": user.get_data(), "records": records})
+
+
+
+### Hospital Interaction Functions
+
+@app.route("/hospital-login", methods=["POST"])
+def hospital_login():
+    '''
+    The API for handling Hospital Login requests.
+    '''
+    
+    data = request.get_json(); nationalId = data["nationalId"]
+    user = Hospitals.query.filter_by(nationalId=nationalId).first()
+
+    if (not user): return "NationalId"
+    elif (not user.check_pw(data["password"])): 
+        return "Password"
+    
+    return generate_token(secret_key, "nationalId", nationalId)
+
+@app.route("/hospital-signup", methods=["POST"])
+def hospital_signup():
+    '''
+    The API for handling Hospital Signup requests. It also assigns a blockchain account to the hospital.
+    '''
+    
+    data = request.get_json(); nationalId = data["nationalId"]
+    user = Hospitals.query.filter_by(nationalId=nationalId).first()
+
+    if (user): return "Failure"
+    asy.run(assign_account("MI_" + nationalId))
+
+    db.session.add(Hospitals(**data)); db.session.commit()
+    return generate_token(secret_key, "nationalId", nationalId)
+
+@app.route("/get-hospital-data", methods=["POST"])
+def get_hospital_data():
+    '''
+    The API for decoding the Token and sending hospital credentials and medical data.
+    '''
+
+    nationalId = decode_token(secret_key, "nationalId", request.get_json()["token"])
+    user = Hospitals.query.filter_by(nationalId=nationalId).first()
+    
+    records = asy.run(get_data("MI_" + nationalId))
+    return jsonify({"cred": user.get_data(), "records": records})
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
