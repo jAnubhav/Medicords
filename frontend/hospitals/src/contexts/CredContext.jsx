@@ -7,6 +7,7 @@ const CredContainer = ({ children }) => {
         aadharId: '', fullName: '', password: '',
     });
 
+    const [records, setRecords] = useState([]);
     const [token, setToken] = useState(localStorage.getItem("token"));
 
     const handleChange = e => {
@@ -29,8 +30,10 @@ const CredContainer = ({ children }) => {
 
     return (
         <CredContext.Provider value={{
-            formData, handleChange, 
-            shortenId, token, setToken
+            formData, setFormData, 
+            handleChange, shortenId, 
+            token, setToken,
+            records, setRecords
         }}> {children} </CredContext.Provider>
     );
 };

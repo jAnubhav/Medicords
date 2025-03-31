@@ -2,24 +2,24 @@ import { useContext, useEffect } from "react";
 import { CredContext } from "../contexts/CredContext";
 
 const Dashboard = () => {
-    const { token } = useContext(CredContext);
+    const { formData, setFormData, token, records, setRecords } = useContext(CredContext);
 
     useEffect(() => {
-        const fetchData = async () => {    
+        const fetchData = async () => {
             const res = await fetch("http://localhost:5000/get-data", {
                 method: "POST", headers: {
                     "Content-Type": "application/json"
                 }, body: JSON.stringify({ "token": token })
-            }).then(data => data.text());
-            
-            console.log(res);
+            }).then(data => data.json());
+
+            setFormData({...res["cred"]}); setRecords(res["records"]);
         }
 
         fetchData()
     }, [])
 
     return (
-        <div>Dashboard</div>
+        <div>{formData.aadharId}</div>
     );
 };
 

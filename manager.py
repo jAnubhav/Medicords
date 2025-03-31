@@ -59,11 +59,12 @@ async def get_accout_data(aadharId: str):
     This function will return the account resources from the blockchain.
     '''
 
-    handle = await get_account_resource(address, "AccManager")["data"]["assigned"]["handle"]
-    k_type = "0x1::string::String"
+    k, acc = "0x1::string::String", await get_account_resource(address, "AccManager")
+
+    add = decode_key(await get_table_item(acc[
+        "data"]["assigned"]["handle"], k, k, "PA_" + aadharId))
     
-    return await get_account_resource(decode_key(await get_table_item(
-        handle, k_type, k_type, "PA_" + aadharId)), "RecManager")["data"]["records"]
+    return (await get_account_resource(add, "RecManager"))["data"]["records"]
 
 
 

@@ -43,6 +43,17 @@ class Patients(db.Model):
         '''
         
         return checkpw(password.encode(), self.password)
+    
+    def get_data(self):
+        '''
+        Returns the patient details as a dictionary.
+        '''
+
+        return {
+            "aadharId": self.aadharId,
+            "fullName": self.fullName
+        }
+
 
 @app.route("/login", methods=["POST"])
 def sign_in():
@@ -80,9 +91,10 @@ def get_data():
     '''
 
     aadharId = decode_token(secret_key, request.get_json()["token"])
-    res = asy.run(get_accout_data(aadharId))
+    user = Patients.query.filter_by(aadharId=aadharId).first()
     
-    return aadharId;
+    records = asy.run(get_accout_data(aadharId))
+    return jsonify({"cred": user.get_data(), "records": records})
 
 if __name__ == "__main__":
     app.run(debug=True)
