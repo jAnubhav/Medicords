@@ -7,35 +7,17 @@ import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const LoginPage = () => {
     const { formData, shortenId, setToken } = useContext(CredContext)
-    const { errors, setErrors, nav } = useContext(UserContext);
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!formData.aadharId) {
-            newErrors.aadharId = 'Aadhar ID is required';
-        } else if (formData.aadharId.length !== 14) {
-            newErrors.aadharId = 'Aadhar ID must be exactly 12 digits';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Password must be at least 8 characters';
-        } else if (formData.password.length > 20) {
-            newErrors.password = 'Password cannot exceed 20 characters';
-        }
-
-        setErrors(newErrors); return Object.keys(newErrors).length === 0;
-    };
+    const { errors, setErrors, nav, validateForm } = useContext(UserContext);
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
-        const newErrors = {}, aadharId = shortenId(formData.aadharId);
+        const newErrors = {};
 
-        const res = await fetch("http://localhost:5000/login", {
+        const res = await fetch("http://localhost:5000/patient-login", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...formData, "aadharId": aadharId })
+            body: JSON.stringify(
+                { ...formData, "aadharId": shortenId(formData.aadharId) }
+            )
         }).then(data => data.text());
 
         if (res === "AadharId") {

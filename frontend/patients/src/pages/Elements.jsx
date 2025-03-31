@@ -4,7 +4,22 @@ import { Link } from "react-router-dom";
 import { CredContext } from "../contexts/CredContext";
 
 const Input = ({ id, type, label, placeholder, value, error }) => {
-    const { handleChange } = useContext(CredContext);
+    const { formData, setFormData } = useContext(CredContext);
+
+    const handleChange = e => {
+        let { name, value, type, checked } = e.target;
+
+        if (name === "aadharId") {
+            value = value.replace(/\D/g, ""); if (value.length > 12) return;
+            let formattedValue = value.replace(/(\d{4})/g, "$1 ").trim();
+    
+            setFormData({ ...formData, [name]: formattedValue }); return;
+        }
+
+        setFormData({
+            ...formData, [name]: type === 'checkbox' ? checked : value
+        });
+    };
 
     return (
         <div>
