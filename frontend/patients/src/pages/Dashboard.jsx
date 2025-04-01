@@ -19,7 +19,7 @@ const Dashboard = () => {
             setFormData({ ...res["cred"] }); setRecords(res["records"]);
         }
 
-        fetchData()
+        fetchData();
     }, [])
 
     return (
@@ -45,18 +45,18 @@ const Dashboard = () => {
                         {records && records.length > 0 ? (
                             records.map((record, index) => (
                                 <div
-                                    key={record.recordId}
+                                    key={record.record_id}
                                     className="bg-gray-800 rounded-lg p-4 shadow-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1"
                                     style={{
-                                        zIndex: userData.records.length - index,
+                                        zIndex: records.length - index,
                                         position: 'relative',
                                         marginTop: index === 0 ? '0' : '-8px'
                                     }}
                                 >
                                     <div className="flex justify-between items-center flex-wrap gap-2">
                                         <div>
-                                            <p className="text-lg font-semibold">{record.recordId}</p>
-                                            <p className="text-sm text-gray-400">Hospital ID: {record.hospitalId}</p>
+                                            <p className="text-lg font-semibold">Rec - {record.record_id}</p>
+                                            <p className="text-sm text-gray-400">Hospital ID: {record.client_id}</p>
                                         </div>
                                         <div className="bg-gray-700 py-1 px-3 rounded-full text-sm">
                                             {new Date(record.date).toLocaleDateString()}

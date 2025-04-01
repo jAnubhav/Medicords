@@ -7,9 +7,10 @@ from sqlalchemy.types import BLOB, String
 from flask_sqlalchemy import SQLAlchemy
 
 from bcrypt import hashpw, gensalt, checkpw
+from json import load, dump
 import asyncio as asy
 
-from manager import assign_account, get_data
+from manager import assign_account, get_data, add_data
 
 from helper import generate_token, decode_token
 from private_data import uri, secret_key
@@ -33,7 +34,7 @@ class Patients(db.Model):
     fullName = Column(String(30), nullable=False)
     password = Column(BLOB, nullable=False)
     
-    def __init__(self, aadharId, fullName, password):
+    def __init__(self, aadharId: str, fullName: str, password: str):
         '''
         It assigns the values to the fiels of the ORM.
         '''
@@ -41,7 +42,7 @@ class Patients(db.Model):
         self.aadharId, self.fullName = aadharId, fullName
         self.password = hashpw(password.encode(), gensalt())
 
-    def check_pw(self, password):
+    def check_pw(self, password: str):
         '''
         It checks whether the password entered matches or not.
         '''
@@ -57,6 +58,10 @@ class Patients(db.Model):
             "aadharId": self.aadharId,
             "fullName": self.fullName
         }
+    
+    @staticmethod
+    def user_query(aadharId: int):
+        Patients.query.filter_by(aadharId=aadharId).first()
 
 
 
@@ -71,7 +76,7 @@ class Hospitals(db.Model):
     hospitalName = Column(String(30), nullable=False)
     password = Column(BLOB, nullable=False)
     
-    def __init__(self, nationalId, hospitalName, password):
+    def __init__(self, nationalId: str, hospitalName: str, password: str):
         '''
         It assigns the values to the fiels of the ORM.
         '''
@@ -79,7 +84,7 @@ class Hospitals(db.Model):
         self.nationalId, self.hospitalName = nationalId, hospitalName
         self.password = hashpw(password.encode(), gensalt())
 
-    def check_pw(self, password):
+    def check_pw(self, password: str):
         '''
         It checks whether the password entered matches or not.
         '''
@@ -96,6 +101,10 @@ class Hospitals(db.Model):
             "hospitalName": self.hospitalName
         }
     
+    @staticmethod
+    def user_query(nationalId: int):
+        Hospitals.query.filter_by(nationalId=nationalId).first()
+        
 
 
 ### Patient Interaction Functions
@@ -187,6 +196,28 @@ def get_hospital_data():
     
     records = asy.run(get_data("MI_" + nationalId))
     return jsonify({"cred": user.get_data(), "records": records})
+
+
+
+### Hospital Functions adding records
+
+@app.route("/add-record", methods=["POST"])
+def add_record():
+    data = request.get_json(); recordId = 0;
+
+    with open("recordId.json", "r") as f:
+        recordId = load(f)["recordId"]
+    
+    user = Patients.query.filter_by(
+        aadharId=data["aadharId"]).first()
+
+    if (not user): return jsonify({"msg": "AadharId"})
+    record = asy.run(add_data(recordId, **data))
+
+    with open("recordId.json", "w") as f:
+        dump({"recordId": recordId + 1}, f)
+    
+    return jsonify({"msg": "Success", "record": record})
 
 
 

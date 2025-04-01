@@ -40,7 +40,9 @@ async def entry_function(account: Account, func_name: str, args: list[any]) -> N
     This function will call the Entry Function that interacts with the blockchain.
     '''
     
-    address = account.account_address; pay = TransactionPayload(
+    address, amount = account.account_address, 100_000_000
+
+    await faucet_client.fund_account(address, amount); pay = TransactionPayload(
         EntryFunction.natural(f"{address}::main", func_name, [], args))
     
     await rest_client.submit_and_wait_for_bcs_transaction(await 
