@@ -6,10 +6,19 @@ import { CredContext } from "./CredContext";
 const UserContext = createContext();
 
 const UserContainer = ({ children }) => {
-    const { formData } = useContext(CredContext);
+    const { formData, setFormData } = useContext(CredContext);
+    const nav = useNavigate(), [errors, setErrors] = useState({});
 
-    const [errors, setErrors] = useState({});
-    const nav = useNavigate();
+    const handleChange = e => {
+        let { name, value } = e.target;
+
+        if (name === "nationalId") {
+            value = value.replace(/\D/g, ""); if (value.length > 10) return;
+            value = value.replace(/(\d{5})/g, "$1 ").trim();
+        }
+
+        setFormData({ ...formData, [name]: value });
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -32,8 +41,10 @@ const UserContainer = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ errors, setErrors, nav, validateForm }}>
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <UserContext.Provider value={{
+            nav, errors, setErrors,
+            handleChange, validateForm
+        }}> <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-6 bg-gray-800 py-10 px-5 sm:px-10 rounded-xl shadow-lg">
                     <div className="flex items-center justify-center gap-1">
                         <div className="w-10"> <img src="./logo.png" alt="Logo" /> </div>

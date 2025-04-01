@@ -7,16 +7,13 @@ const CredContainer = ({ children }) => {
         nationalId: '', hospitalName: '', password: '',
     });
 
-    const [records, setRecords] = useState([]);
     const [token, setToken] = useState(localStorage.getItem("token"));
-
     const shortenId = nationalId => nationalId.replace(/\s+/g, "");
 
     return (
         <CredContext.Provider value={{
             formData, setFormData, 
-            shortenId, token, setToken,
-            records, setRecords
+            shortenId, token, setToken
         }}> {children} </CredContext.Provider>
     );
 };

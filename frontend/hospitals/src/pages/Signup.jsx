@@ -6,8 +6,14 @@ import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = () => {
-    const { formData, shortenId, setToken } = useContext(CredContext);
-    const { errors, setErrors, nav, validateForm } = useContext(UserContext);
+    const {
+        formData, shortenId, setToken
+    } = useContext(CredContext);
+
+    const {
+        nav, errors, setErrors,
+        validateForm, handleChange
+    } = useContext(UserContext);
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
@@ -31,18 +37,18 @@ const SignupPage = () => {
     return (
         <form className="space-y-6">
             <div className="space-y-4">
-                <Input id="hospitalName" type="text" placeholder="Fortis HealthCare"
+                <Input id="hospitalName" type="text" placeholder="Fortis HealthCare" func={handleChange}
                     label="Hospital Name" inpValue={formData.hospitalName} error={errors.hospitalName} />
 
-                <Input id="nationalId" type="text" placeholder="XXXXX XXXXX"
+                <Input id="nationalId" type="text" placeholder="XXXXX XXXXX" func={handleChange}
                     label="National Id" inpValue={formData.nationalId} error={errors.nationalId} />
 
-                <Input id="password" type="password" placeholder="********"
+                <Input id="password" type="password" placeholder="********" func={handleChange}
                     label="Password" inpValue={formData.password} error={errors.password} />
             </div>
 
-            <Button handleSubmit={handleSubmit} text="Create Account" place="Already have an account?"
-                link="/login" holder="Sign in here" />
+            <Button handleSubmit={handleSubmit} text="Create Account"
+                place="Already have an account?" link="/login" holder="Sign in here" />
         </form>
     );
 };
