@@ -6,8 +6,13 @@ import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = () => {
-    const { formData, shortenId, setToken } = useContext(CredContext);
-    const { errors, setErrors, nav, validateForm } = useContext(UserContext);
+    const {
+        formData, shortenId, setToken
+    } = useContext(CredContext);
+
+    const {
+        nav, errors, setErrors, validateForm
+    } = useContext(UserContext);
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
