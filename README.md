@@ -19,12 +19,21 @@ Medicords is a revolutionary platform designed to keep an individual's entire me
 3. **Access Control** – Patients can grant doctors or medical institutes permission to view or update records.
 4. **Seamless Retrieval** – Records can be accessed in real time with authentication mechanisms.
 
+## 🛠 Tech Stack
+
+- **Blockchain:** Aptos
+- **Smart Contracts:** Move programming language
+- **Blockchain Interactions:** Aptos-SDK (Python)
+- **Backend API:** Flask (Python)
+- **Frontend:** React.js
+- **Database:** MySQL (for storing non-critical data of account holders)
+
 ## 🚀 Benefits
 
-✅ No risk of data loss or manipulation.
-✅ Eliminates the hassle of carrying physical reports.
-✅ Speeds up medical treatments with instant access to history.
-✅ Transparent and efficient healthcare management.
+- No risk of data loss or manipulation.
+- Eliminates the hassle of carrying physical reports.
+- Speeds up medical treatments with instant access to history.
+- Transparent and efficient healthcare management.
 
 ## 📈 Future Enhancements
 
@@ -32,13 +41,6 @@ Medicords is a revolutionary platform designed to keep an individual's entire me
 - Integration with insurance providers.
 - Decentralized identity verification for enhanced privacy.
 
-## 🔗 Get Started
-
-Join **Medicords** today and experience a seamless, secure, and paperless way to manage your medical history.
-
-For more information, visit our website or contact us!
-
 ---
 
 **Medicords** – Revolutionizing Healthcare with Blockchain Technology.
-
