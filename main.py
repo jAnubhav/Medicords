@@ -7,7 +7,6 @@ from sqlalchemy.types import BLOB, String
 from flask_sqlalchemy import SQLAlchemy
 
 from bcrypt import hashpw, gensalt, checkpw
-from json import load, dump
 import asyncio as asy
 
 from manager import assign_account, get_data, add_data
@@ -55,13 +54,8 @@ class Patients(db.Model):
         '''
 
         return {
-            "aadharId": self.aadharId,
-            "fullName": self.fullName
+            "aadharId": self.aadharId, "fullName": self.fullName
         }
-    
-    @staticmethod
-    def user_query(aadharId: int):
-        Patients.query.filter_by(aadharId=aadharId).first()
 
 
 
@@ -97,13 +91,8 @@ class Hospitals(db.Model):
         '''
 
         return {
-            "nationalId": self.nationalId,
-            "hospitalName": self.hospitalName
+            "nationalId": self.nationalId, "hospitalName": self.hospitalName
         }
-    
-    @staticmethod
-    def user_query(nationalId: int):
-        Hospitals.query.filter_by(nationalId=nationalId).first()
         
 
 
@@ -122,7 +111,7 @@ def patient_login():
     elif (not user.check_pw(data["password"])): 
         return "Password"
     
-    return generate_token(secret_key, "aadharId", aadharId)
+    return generate_token(secret_key, aadharId)
 
 @app.route("/patient-signup", methods=["POST"])
 def patient_signup():
@@ -134,10 +123,10 @@ def patient_signup():
     user = Patients.query.filter_by(aadharId=aadharId).first()
 
     if (user): return "Failure"
-    asy.run(assign_account("PT_" + aadharId))
+    asy.run(assign_account(aadharId))
 
     db.session.add(Patients(**data)); db.session.commit()
-    return generate_token(secret_key, "aadharId", aadharId)
+    return generate_token(secret_key, aadharId)
 
 @app.route("/get-patient-data", methods=["POST"])
 def get_patient_data():
@@ -145,10 +134,12 @@ def get_patient_data():
     The API for decoding the Token and sending patient credentials and medical data.
     '''
 
-    aadharId = decode_token(secret_key, "aadharId", request.get_json()["token"])
+    aadharId = decode_token(secret_key, request.get_json()["token"])
     user = Patients.query.filter_by(aadharId=aadharId).first()
     
-    records = asy.run(get_data("PT_" + aadharId))
+    if (not user): return jsonify({"cred": "Failure"})
+    
+    records = asy.run(get_data(aadharId))
     return jsonify({"cred": user.get_data(), "records": records})
 
 
@@ -168,7 +159,7 @@ def hospital_login():
     elif (not user.check_pw(data["password"])): 
         return "Password"
     
-    return generate_token(secret_key, "nationalId", nationalId)
+    return generate_token(secret_key, nationalId)
 
 @app.route("/hospital-signup", methods=["POST"])
 def hospital_signup():
@@ -180,10 +171,10 @@ def hospital_signup():
     user = Hospitals.query.filter_by(nationalId=nationalId).first()
 
     if (user): return "Failure"
-    asy.run(assign_account("MI_" + nationalId))
+    asy.run(assign_account(nationalId))
 
     db.session.add(Hospitals(**data)); db.session.commit()
-    return generate_token(secret_key, "nationalId", nationalId)
+    return generate_token(secret_key, nationalId)
 
 @app.route("/get-hospital-data", methods=["POST"])
 def get_hospital_data():
@@ -191,10 +182,12 @@ def get_hospital_data():
     The API for decoding the Token and sending hospital credentials and medical data.
     '''
 
-    nationalId = decode_token(secret_key, "nationalId", request.get_json()["token"])
+    nationalId = decode_token(secret_key, request.get_json()["token"])
     user = Hospitals.query.filter_by(nationalId=nationalId).first()
+
+    if (not user): return jsonify({"cred": "Failure"})
     
-    records = asy.run(get_data("MI_" + nationalId))
+    records = asy.run(get_data(nationalId))
     return jsonify({"cred": user.get_data(), "records": records})
 
 
@@ -203,21 +196,15 @@ def get_hospital_data():
 
 @app.route("/add-record", methods=["POST"])
 def add_record():
-    data = request.get_json(); recordId = 0;
-
-    with open("recordId.json", "r") as f:
-        recordId = load(f)["recordId"]
+    data = request.get_json()
     
     user = Patients.query.filter_by(
-        aadharId=data["aadharId"]).first()
+        aadharId=data["client_id"]).first()
 
-    if (not user): return jsonify({"msg": "AadharId"})
-    record = asy.run(add_data(recordId, **data))
+    if (not user): return "AadharId"
+    date = asy.run(add_data(**data))
 
-    with open("recordId.json", "w") as f:
-        dump({"recordId": recordId + 1}, f)
-    
-    return jsonify({"msg": "Success", "record": record})
+    return date
 
 
 

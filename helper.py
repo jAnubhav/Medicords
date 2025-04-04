@@ -8,6 +8,7 @@ from aptos_sdk.transactions import EntryFunction, TransactionPayload
 from jwt import encode, decode
 
 from data import rest_url, faucet_url
+from json import load
 
 rest_client = RestClient(rest_url)
 faucet_client = FaucetClient(faucet_url, rest_client)
@@ -55,12 +56,16 @@ async def get_account_resource(address, res_type: str):
 
     return await rest_client.account_resource(address, f"{address}::main::{res_type}")
 
-async def get_table_item(handle: str, key_type: str, value_type: str, key: str):
+async def get_table_item(key: str):
     '''
     This function will return the Table Item from an Account.
     '''
+
+    with open("handle.json", "r") as f:
+        handle = load(f)["handle"]
     
-    return await rest_client.get_table_item(handle, key_type, value_type, key)
+    return await rest_client.get_table_item(handle, 
+        "0x1::string::String", "0x1::string::String", key)
 
 
 
@@ -80,16 +85,16 @@ def decode_key(key: str) -> str:
 
     return "0x" + "".join(hex(ord(c))[2:].zfill(2) for c in key)
 
-def generate_token(secret_key: str, key: str, value: str):
+def generate_token(secret_key: str, value: str):
     '''
     This function will generate the Authentication Token.
     '''
     
-    return encode({ key: value }, secret_key, algorithm="HS256")
+    return encode({ "client_id": value }, secret_key, algorithm="HS256")
 
-def decode_token(secret_key: str, key: str, token: str):
+def decode_token(secret_key: str, token: str):
     '''
     This function will decode the Authentication Token.
     '''
     
-    return decode(token.encode(), secret_key, algorithms=["HS256"])[key]
+    return decode(token.encode(), secret_key, algorithms=["HS256"])["client_id"]
