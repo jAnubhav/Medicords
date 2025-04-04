@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Input, Button } from './Elements';
 
@@ -7,13 +8,15 @@ import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const LoginPage = () => {
     const {
-        formData, shortenId, setToken
+        formData, setFormData, shortenId, setToken
     } = useContext(CredContext);
 
     const {
-        nav, errors, setErrors,
+        errors, setErrors,
         validateForm, handleChange
     } = useContext(UserContext);
+
+    const nav = useNavigate()
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
@@ -34,6 +37,7 @@ const LoginPage = () => {
             setErrors(newErrors); return;
         }
 
+        setFormData({ ...formData, "nationalId": shortenId(formData.nationalId) })
         localStorage.setItem("token", res); setToken(res); nav("/");
     };
 

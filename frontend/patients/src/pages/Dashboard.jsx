@@ -71,12 +71,13 @@ const Dashboard = () => {
                                     <div className="flex justify-between items-center flex-wrap gap-2 border-b border-gray-700 pb-4 mb-4">
                                         <div className="flex items-center">
                                             <div className="bg-blue-500 p-2 rounded-lg mr-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
                                             </div>
-                                            <div className="">
-                                                <p className="text-sm text-gray-400">Hospital ID: </p>
+
+                                            <div>
+                                                <p className="text-gray-400">Hospital ID: </p>
                                                 <p className="text-white font-medium">{record.client_id.replace(/(\d{5})/g, "$1 ")}</p>
                                             </div>
                                         </div>
