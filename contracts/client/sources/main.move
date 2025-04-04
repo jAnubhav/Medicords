@@ -3,7 +3,8 @@ module Account::main {
     use aptos_std::string::String;
 
     struct Record has store, copy, drop {
-        record_id: u64, client_id: String, date: String
+        client_id: String, date: String,
+        symptoms: String, diagnosis: String, treatment: String
     }
 
     struct RecManager has key {
@@ -17,13 +18,13 @@ module Account::main {
     }
 
     public entry fun add_record(
-        account: &signer, record_id: u64,
-        client_id: String, date: String
+        account: &signer, client_id: String, date: String,
+        symptoms: String, diagnosis: String, treatment: String
     ) acquires RecManager {
         let manager = borrow_global_mut<RecManager>(
             signer::address_of(account));
 
-        let record = Record { record_id, client_id, date };
-        vector::push_back(&mut manager.records, record);
+        vector::push_back(&mut manager.records, Record {
+            client_id, date, symptoms, diagnosis, treatment });
     }
 }
