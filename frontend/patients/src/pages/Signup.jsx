@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import { Input, Button } from './Elements';
 
@@ -7,12 +8,14 @@ import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = () => {
     const {
-        formData, shortenId, setToken
+        formData, setFormData, shortenId, setToken
     } = useContext(CredContext);
 
     const {
-        nav, errors, setErrors, validateForm
+        errors, setErrors, validateForm
     } = useContext(UserContext);
+
+    const nav = useNavigate();
 
     const handleSubmit = async e => {
         e.preventDefault(); if (!validateForm()) return;
@@ -29,7 +32,8 @@ const SignupPage = () => {
             newErrors.aadharId = 'Account with this Aadhar ID exists';
             setErrors(newErrors); return;
         }
-
+        
+        setFormData({ ...formData, "aadharId": shortenId(formData.aadharId) })
         localStorage.setItem("token", res); setToken(res); nav("/");
     };
 
