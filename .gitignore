@@ -2,7 +2,6 @@
 /contracts/manager/build
 
 /private_data.py
-/recordId.json
 
 /__pycache__
 /env
