@@ -1,0 +1,48 @@
+{
+  "name": "medicords",
+  "version": "1.0.0",
+  "description": "A secure web-based application that harnesses blockchain technology to store and manage medical records, ensuring data integrity, privacy, and accessibility.",
+  "keywords": [
+    "blockchain",
+    "medical records",
+    "healthcare",
+    "secure storage",
+    "data integrity",
+    "privacy",
+    "decentralized",
+    "smart contracts",
+    "EHR",
+    "patient data",
+    "web3",
+    "Aptos blockchain",
+    "hospital management",
+    "secure web app",
+    "HIPAA compliant",
+    "healthtech"
+  ],
+  "type": "module",
+  "scripts": {
+    "start": "vite --host",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.0",
+    "tailwindcss": "^4.1.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "vite": "^6.2.0"
+  }
+}

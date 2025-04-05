@@ -1,0 +1,9 @@
+/contracts/client/build
+/contracts/manager/build
+
+/private_data.py
+
+/__pycache__
+/env
+
+/frontend/node_modules
