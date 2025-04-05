@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { CredContext } from "../contexts/CredContext";
 
 import Input from "./Input";
+import { Button } from "./Buttons";
 
 const RecordForm = ({ setVis, records, setRecords }) => {
     const { formData, shortenAadharId } = useContext(CredContext);
@@ -149,9 +150,8 @@ const RecordForm = ({ setVis, records, setRecords }) => {
                 </div>
 
                 <div className="flex justify-end space-x-3 mt-6">
-                    <button onClick={handleAddRecord} className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-300" > Save Record </button>
-
-                    <button onClick={handleCloseModal} className="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 rounded-md transition-colors duration-300" > Cancel </button>
+                    <Button func={handleAddRecord} color="blue-600" trans="blue-700" title="Save Record" />
+                    <Button func={handleCloseModal} color="gray-700" trans="gray-600" title="Cancel" />
                 </div>
             </div>
         </div>

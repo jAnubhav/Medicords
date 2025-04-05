@@ -17,8 +17,6 @@ import {
 const InnerApp = () => {
     const { token, status } = useContext(CredContext)
 
-    console.log(status)
-
     return (
         <Routes>
             <Route path="/" element={token ? <Dashboard /> : <Navigate to={`/${status}/login`} />} />

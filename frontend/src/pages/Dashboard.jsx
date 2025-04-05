@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { CredContext } from "../contexts/CredContext";
-
 import RecordForm from "../components/RecordForm";
-
 import { GridBox, TextBox } from "../components/GridBox";
+import { Button } from "../components/Buttons";
+
+import { CredContext } from "../contexts/CredContext";
 
 const Dashboard = () => {
     const {
@@ -26,7 +26,7 @@ const Dashboard = () => {
             }).then(data => data.json());
 
             if (res["cred"] === "Failure") {
-                nav(`/${status}/login`); setToken(null); 
+                nav(`/${status}/login`); setToken(null);
                 localStorage.removeItem("token"); return;
             }
 
@@ -52,9 +52,9 @@ const Dashboard = () => {
 
     const logout = () => {
         sessionStorage.removeItem("cred"); sessionStorage.removeItem("records");
-        localStorage.removeItem("token"); nav(`/${status}/login`); setToken(null); 
-        
-        setFormData({aadharId: '', nationalId: '', name: '', password: ''});
+        localStorage.removeItem("token"); nav(`/${status}/login`); setToken(null);
+
+        setFormData({ aadharId: '', nationalId: '', name: '', password: '' });
     }
 
     return (
@@ -68,7 +68,7 @@ const Dashboard = () => {
                         <h1 className="text-2xl font-bold text-white">Medicords</h1>
                     </div>
 
-                    <button onClick={logout} className="bg-blue-600 text-sm hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 cursor-pointer">Log Out</button>
+                    <Button func={logout} color="blue-600" trans="blue-700" title="Log Out" />
                 </div>
             </nav>
 
@@ -85,7 +85,9 @@ const Dashboard = () => {
                 <div className="mb-6">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-medium">Your Records</h3>
-                        {status === "hospitals" && <button onClick={handleOpenModal} className="bg-blue-600 text-sm hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 cursor-pointer">+ Add Record</button>}
+                        {status === "hospitals" && (
+                            <Button func={handleOpenModal} color="blue-600" trans="blue-700" title="+ Add Record" />
+                        )}
                     </div>
 
                     <div className="space-y-6">
@@ -128,10 +130,7 @@ const Dashboard = () => {
                                         <GridBox color="red" svg="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" title="Symptoms">
                                             <div className="flex flex-wrap gap-2">
                                                 {record.symptoms.split(",").map((symptom, idx) => (
-                                                    <span
-                                                        key={idx}
-                                                        className="bg-red-900/50 text-red-100 px-3 py-1 rounded-lg text-xs border border-red-800/30"
-                                                    > {symptom.trim()} </span>
+                                                    <span key={idx} className="bg-red-900/50 text-red-100 px-3 py-1 rounded-lg text-xs border border-red-800/30"> {symptom.trim()} </span>
                                                 ))}
                                             </div>
                                         </GridBox>

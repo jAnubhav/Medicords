@@ -14,4 +14,10 @@ const ButtonLink = ({ handleSubmit, text, place, link, holder }) => {
     );
 };
 
-export { ButtonLink };
+const Button = ({ func, color, trans, title }) => {
+    return (
+        <button onClick={func} className={`px-4 py-2 text-sm bg-${color} hover:bg-${trans} rounded-md cursor-pointer`}> {title} </button>
+    );
+};
+
+export { Button, ButtonLink };

@@ -8,7 +8,7 @@ const CredContainer = ({ children }) => {
     });
 
     const [token, setToken] = useState(localStorage.getItem("token"));
-    const [status, setStatus] = useState(sessionStorage.getItem("status"));
+    const [status, setStatus] = useState(sessionStorage.getItem("status") || "patients");
 
     const shortenAadharId = aadharId => aadharId.replace(/\s+/g, "");
     const shortenNationalId = nationalId => nationalId.replace(/\s+/g, "");
