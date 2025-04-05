@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Input from "../components/Input"
 import { CredContext } from "../contexts/CredContext";
+import { GridBox, TextBox } from "../components/GridBox";
 
 const Dashboard = () => {
     const {
@@ -46,12 +47,15 @@ const Dashboard = () => {
 
     const [showAddModal, setShowAddModal] = useState(false);
 
-    const [newRecord, setNewRecord] = useState({
+    //
+    const [newRecord, setNewRecord] = useState({ 
         client_id: "", symptoms: [], diagnosis: "", treatment: ""
     });
 
+    //
     const [errors, setErrors] = useState({});
 
+    //
     const availableSymptoms = [
         "Fever", "Headache", "Cough", "Fatigue", "Nausea",
         "Vomiting", "Dizziness", "Chest Pain", "Shortness of Breath",
@@ -60,10 +64,13 @@ const Dashboard = () => {
         "Numbness", "Blurred Vision", "Loss of Appetite"
     ];
 
+    //
     const [symptomInput, setSymptomInput] = useState("");
+
 
     const handleOpenModal = () => setShowAddModal(true);
 
+    
     const handleCloseModal = () => {
         setShowAddModal(false); setSymptomInput("");
 
@@ -72,6 +79,7 @@ const Dashboard = () => {
         });
     };
 
+    //
     const handleChange = e => {
         let { name, value } = e.target;
 
@@ -83,6 +91,7 @@ const Dashboard = () => {
         setNewRecord({ ...newRecord, [name]: value });
     };
 
+    //
     const handleAddSymptom = symptom => {
         if (!newRecord.symptoms.includes(symptom)) setNewRecord({
             ...newRecord, symptoms: [...newRecord.symptoms, symptom]
@@ -91,6 +100,7 @@ const Dashboard = () => {
         setSymptomInput("");
     };
 
+    //
     const handleRemoveSymptom = symptomToRemove => {
         setNewRecord({
             ...newRecord, symptoms: newRecord.symptoms
@@ -98,6 +108,7 @@ const Dashboard = () => {
         });
     };
 
+    //
     const validateForm = () => {
         const newErrors = {};
 
@@ -114,6 +125,7 @@ const Dashboard = () => {
         setErrors(newErrors); return Object.keys(newErrors).length === 0;
     };
 
+    //
     const handleAddRecord = async () => {
         if (!validateForm()) return; const newErrors = {};
 
@@ -144,12 +156,13 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
-            <nav className="bg-gray-800 p-4 shadow-lg">
+            <nav className="bg-gray-800 p-4 shadow-lg sticky top-0 z-50">
                 <div className="flex items-center justify-center gap-3">
                     <div className="w-10"> <img src="./logo.png" alt="Logo" /> </div>
                     <h1 className="text-2xl font-bold text-white">Medicords</h1>
                 </div>
             </nav>
+
 
             <main className="flex-1 container mx-auto p-4 md:p-6">
                 <div className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -188,12 +201,14 @@ const Dashboard = () => {
                                             </div>
 
                                             <div>
-                                                <p className="text-gray-400">{(status === "patients" ? "Hospital" : "Patient")} ID: </p>
-                                                <p className="text-white font-medium">{record.client_id.match(new RegExp(
+                                                <p className="text-gray-400 text-sm font-medium">{
+                                                    (status === "patients" ? "Hospital" : "Patient")} ID: </p>
+                                                <p className="text-white text-sm font-bold">{record.client_id.match(new RegExp(
                                                     `\\d{1,${record.client_id % 3 === 0 ? 4 : 5}}`, 'g')).join(' ')}</p>
                                             </div>
                                         </div>
-                                        <div className="bg-gray-700 py-2 px-4 rounded-lg text-sm flex items-center">
+
+                                        <div className="bg-gray-700 p-3 rounded-lg text-xs flex items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
@@ -202,48 +217,20 @@ const Dashboard = () => {
                                     </div>
 
                                     <div className="grid md:grid-cols-3 gap-2">
-                                        <div className="bg-gray-900 rounded-lg p-4">
-                                            <div className="flex items-center mb-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                </svg>
-                                                <h4 className="text-sm font-medium text-white">Symptoms</h4>
-                                            </div>
+                                        <GridBox color="red" svg="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" title="Symptoms">
                                             <div className="flex flex-wrap gap-2">
                                                 {record.symptoms.split(",").map((symptom, idx) => (
                                                     <span
                                                         key={idx}
-                                                        className="bg-red-900/50 text-red-100 px-3 py-1 rounded-full text-sm border border-red-800/30"
-                                                    >
-                                                        {symptom.trim()}
-                                                    </span>
+                                                        className="bg-red-900/50 text-red-100 px-3 py-1 rounded-lg text-xs border border-red-800/30"
+                                                    > {symptom.trim()} </span>
                                                 ))}
                                             </div>
-                                        </div>
+                                        </GridBox>
 
-                                        <div className="bg-gray-900 rounded-lg p-4">
-                                            <div className="flex items-center mb-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                                </svg>
-                                                <h4 className="text-sm font-medium text-white">Diagnosis</h4>
-                                            </div>
-                                            <div className="bg-yellow-900/20 border border-yellow-800/30 text-yellow-100 px-3 py-2 rounded-lg">
-                                                <p className="text-white font-medium">{record.diagnosis}</p>
-                                            </div>
-                                        </div>
+                                        <TextBox color="yellow" svg="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" title="Diagnosis" value={record.diagnosis} />
 
-                                        <div className="bg-gray-900 rounded-lg p-4">
-                                            <div className="flex items-center mb-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                                </svg>
-                                                <h4 className="text-sm font-medium text-white">Treatment</h4>
-                                            </div>
-                                            <div className="bg-green-900/20 border border-green-800/30 text-green-100 px-3 py-2 rounded-lg">
-                                                <p className="text-white font-medium">{record.treatment}</p>
-                                            </div>
-                                        </div>
+                                        <TextBox color="green" svg="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" title="Treatment" value={record.treatment} />
                                     </div>
                                 </div>
                             ))
