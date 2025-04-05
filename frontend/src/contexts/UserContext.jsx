@@ -63,10 +63,16 @@ const UserContainer = ({ children }) => {
         setErrors(errs); return Object.keys(errs).length === 0;
     };
 
+    const transformLabel = str => {
+        return str.replace(/([A-Z])/g, ' $1')
+            .replace(/^./, s => s.toUpperCase());
+    };
+
+
     return (
         <UserContext.Provider value={{
             errors, setErrors, handleChange, 
-            validatePatient, validateHospital
+            validatePatient, validateHospital, transformLabel
         }}> <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-6 bg-gray-800 py-10 px-5 sm:px-10 rounded-xl shadow-lg">
                     <div className="flex items-center justify-center gap-1">

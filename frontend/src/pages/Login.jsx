@@ -15,7 +15,7 @@ const LoginPage = ({ type }) => {
 
     const {
         errors, setErrors, handleChange,
-        validatePatient, validateHospital
+        validatePatient, validateHospital, transformLabel
     } = useContext(UserContext);
 
     const nav = useNavigate()
@@ -31,7 +31,7 @@ const LoginPage = ({ type }) => {
         }).then(data => data.text());
 
         if (res === "Failure") {
-            errs[clientId] = `Account with this ${transformLabel(
+            errs[clientId] = `No Account with this ${transformLabel(
                 clientId)} exists`; setErrors(errs); return;
         } else if (res === "Password") {
             errs.password = 'Incorrect Password'; setErrors(errs); return;

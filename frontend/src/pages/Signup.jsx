@@ -15,15 +15,10 @@ const SignupPage = ({ type }) => {
 
     const {
         errors, setErrors, handleChange,
-        validatePatient, validateHospital
+        validatePatient, validateHospital, transformLabel
     } = useContext(UserContext);
 
     const nav = useNavigate();
-
-    const transformLabel = str => {
-        return str.replace(/([A-Z])/g, ' $1')
-            .replace(/^./, s => s.toUpperCase());
-    };
 
     const handleSubmit = async (e, validate, clientId, func) => {
         e.preventDefault(); if (!validate()) return; const errs = {};

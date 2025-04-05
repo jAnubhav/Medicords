@@ -34,7 +34,7 @@ const TextBox = ({ color, svg, title, value }) => {
     
     return (
         <GridBox color={color} svg={svg} title={title}>
-            <div className={`${styles.bg} ${styles.border} ${styles.text} px-3 py-2 rounded-lg`}>
+            <div className={`${styles.bg} border ${styles.border} ${styles.text} px-3 py-2 rounded-lg`}>
                 <p className="text-white text-sm font-medium">{value}</p>
             </div>
         </GridBox>
