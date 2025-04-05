@@ -26,8 +26,8 @@ const Dashboard = () => {
             }).then(data => data.json());
 
             if (res["cred"] === "Failure") {
-                nav(`/${(status == "") ? "patients" : status}/login`);
-                setToken(null); localStorage.removeItem("token"); return;
+                nav(`/${status}/login`); setToken(null); 
+                localStorage.removeItem("token"); return;
             }
 
             setFormData({ ...res["cred"] }); setRecords(res["records"]);
@@ -48,17 +48,30 @@ const Dashboard = () => {
     }, []);
 
     const [showAddModal, setShowAddModal] = useState(false);
-
     const handleOpenModal = () => setShowAddModal(true);
+
+    const logout = () => {
+        sessionStorage.removeItem("cred"); sessionStorage.removeItem("records");
+        localStorage.removeItem("token"); nav(`/${status}/login`); setToken(null); 
+        
+        setFormData({aadharId: '', nationalId: '', name: '', password: ''});
+    }
 
     return (
         <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
             <nav className="bg-gray-800 p-4 shadow-lg sticky top-0 z-50">
-                <div className="flex items-center justify-center gap-3">
-                    <div className="w-10"> <img src="./logo.png" alt="Logo" /> </div>
-                    <h1 className="text-2xl font-bold text-white">Medicords</h1>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10">
+                            <img src="./logo.png" alt="Logo" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-white">Medicords</h1>
+                    </div>
+
+                    <button onClick={logout} className="bg-blue-600 text-sm hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 cursor-pointer">Log Out</button>
                 </div>
             </nav>
+
 
 
             <main className="flex-1 container mx-auto p-4 md:p-6">
@@ -72,9 +85,7 @@ const Dashboard = () => {
                 <div className="mb-6">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-medium">Your Records</h3>
-                        {status === "hospitals" && <button onClick={handleOpenModal} className="bg-blue-600 text-sm hover:bg-blue-700 text-white px-4 py-2 rounded-md  transition-colors duration-300" >
-                            <span className="mr-1">+</span> Add Record
-                        </button>}
+                        {status === "hospitals" && <button onClick={handleOpenModal} className="bg-blue-600 text-sm hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 cursor-pointer">+ Add Record</button>}
                     </div>
 
                     <div className="space-y-6">

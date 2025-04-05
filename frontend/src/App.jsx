@@ -10,20 +10,22 @@ import Signup from "./pages/Signup";
 
 import Dashboard from "./pages/Dashboard";
 
-import { 
+import {
     CredContainer, CredContext
 } from "./contexts/CredContext";
 
 const InnerApp = () => {
-    const { token } = useContext(CredContext)
+    const { token, status } = useContext(CredContext)
+
+    console.log(status)
 
     return (
         <Routes>
-            <Route path="/" element={token ? <Dashboard /> : <Navigate to="/patients/login" />} />
+            <Route path="/" element={token ? <Dashboard /> : <Navigate to={`/${status}/login`} />} />
 
             <Route path="/patients/login" element={token ? <Navigate to="/" /> : <Login type="patients" />} />
             <Route path="/patients/signup" element={token ? <Navigate to="/" /> : <Signup type="patients" />} />
-            
+
             <Route path="/hospitals/login" element={token ? <Navigate to="/" /> : <Login type="hospitals" />} />
             <Route path="/hospitals/signup" element={token ? <Navigate to="/" /> : <Signup type="hospitals" />} />
         </Routes>
