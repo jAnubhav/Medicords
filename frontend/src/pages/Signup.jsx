@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Input from '../components/Input';
 import { ButtonLink } from '../components/Buttons'
@@ -8,59 +7,14 @@ import { CredContext } from '../contexts/CredContext';
 import { UserContainer, UserContext } from '../contexts/UserContext';
 
 const SignupPage = ({ type }) => {
-    const {
-        formData, setFormData, setToken, setStatus,
-        shortenAadharId, shortenNationalId
-    } = useContext(CredContext);
-
-    const {
-        errors, setErrors, handleChange,
-        validatePatient, validateHospital, transformLabel
-    } = useContext(UserContext);
-
-    const nav = useNavigate();
-
-    const handleSubmit = async (e, validate, clientId, func) => {
-        e.preventDefault(); if (!validate()) return; const errs = {};
-
-        const res = await fetch("http://localhost:5000/signup", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-                { ...formData, "type": type, [clientId]: func(formData[clientId]) }
-            )
-        }).then(data => data.text());
-
-        if (res === "Failure") {
-            errs[clientId] = `Account with this ${transformLabel(
-                clientId)} exists`; setErrors(errs); return;
-        }
-
-        sessionStorage.setItem("cred", JSON.stringify({
-            [clientId]: func(formData[clientId]), name: formData.name
-        })); sessionStorage.setItem("records", JSON.stringify([]));
-
-        setFormData({ ...formData, [clientId]: func(formData[clientId]) });
-
-        sessionStorage.setItem("status", type); setStatus(type); 
-        localStorage.setItem("token", res); setToken(res); nav("/");
-    };
-
-    const handlePatientSubmit = async e => {
-        await handleSubmit(e, validatePatient, "aadharId", shortenAadharId);
-    }
-
-    const handleHospitalSubmit = async e => {
-        await handleSubmit(e, validateHospital, "nationalId", shortenNationalId);
-    }
-
-    const placeholder = (type === "patients") ? "Anubhav Jain" : "Fortis HealthCare";
-    const label = (type === "patients") ? "Patient's Name" : "Hospital's Name";
+    const { formData } = useContext(CredContext), { errors, handleChange, handleSubmit } = useContext(UserContext);
+    const chk = type === "patients", handleFormSubmit = e => handleSubmit(e, "signup", chk ? "aadharId" : "nationalId");
 
     return (
         <form className="space-y-6">
             <div className="space-y-4">
-                <Input id="name" type="text" placeholder={placeholder} func={handleChange}
-                    label={label} inpValue={formData.name} error={errors.name} />
+                <Input id="name" type="text" placeholder={chk ? "Anubhav Jain" : "Fortis HealthCare"}
+                    label={`${chk ? "Patient" : "Hospital"}'s Name`} inpValue={formData.name} error={errors.name} />
 
                 {type === 'patients' ? (
                     <Input id="aadharId" type="text" placeholder="XXXX XXXX XXXX" func={handleChange}
@@ -74,8 +28,8 @@ const SignupPage = ({ type }) => {
                     label="Password" inpValue={formData.password} error={errors.password} />
             </div>
 
-            <ButtonLink handleSubmit={(type === 'patients' ? handlePatientSubmit : handleHospitalSubmit)}
-                text="Create Account" place="Already have an account?" link={`/${type}/login`} holder="Sign in here" />
+            <ButtonLink handleSubmit={handleFormSubmit} text="Create Account" 
+                place="Already have an account?" link={`/${type}/login`} holder="Sign in here" />
         </form>
     );
 };
