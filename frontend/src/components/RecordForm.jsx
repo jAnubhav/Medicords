@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { CredContext } from "../contexts/CredContext";
 
-import Input from "./Input";
 import { Button } from "./Buttons";
+import Input from "./Input";
 
 const RecordForm = ({ setVis, records, setRecords }) => {
-    const { formData, shortenAadharId } = useContext(CredContext);
+    const { formData, shortenAadharId, setLoad } = useContext(CredContext);
 
     const [newRecord, setNewRecord] = useState({
         client_id: "", symptoms: [], diagnosis: "", treatment: ""
@@ -48,7 +48,6 @@ const RecordForm = ({ setVis, records, setRecords }) => {
                 .filter(symptom => symptom !== symptomToRemove)
         });
     };
-
         
     const handleCloseModal = () => {
         setVis(false); setSymptomInput("");
@@ -75,7 +74,7 @@ const RecordForm = ({ setVis, records, setRecords }) => {
     };
 
     const handleAddRecord = async () => {
-        if (!validateForm()) return; const newErrors = {};
+        if (!validateForm()) return; const newErrors = {}; setLoad(true);
 
         const res = await fetch("http://localhost:5000/add-record", {
             method: "POST", headers: { "Content-Type": "application/json" },
@@ -88,15 +87,16 @@ const RecordForm = ({ setVis, records, setRecords }) => {
 
         if (res === "AadharId") {
             newErrors.aadharId = "No Account with this Aadhar Id doesn't exists";
-            setErrors(newErrors); return;
+            setErrors(newErrors); setLoad(false); return;
         }
 
         records.push({
             ...newRecord, "date": res, "symptoms": newRecord.symptoms.join(","),
             "client_id": newRecord.client_id.replace(/\s+/g, "")
-        }); setRecords(records);
-
+        }); 
+        
         sessionStorage.setItem("records", JSON.stringify(records)); handleCloseModal();
+        setRecords(records); setLoad(false);
     };
 
     const filteredSymptoms = availableSymptoms.filter(symptom => symptom.toLowerCase()

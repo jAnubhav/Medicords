@@ -1,14 +1,16 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Loader from "../components/Loader";
+
 import { CredContext } from "./CredContext";
 
 const UserContext = createContext();
 
 const UserContainer = ({ children }) => {
     const {
-        formData, setFormData, setToken, setStatus,
-        shortenAadharId, shortenNationalId
+        formData, setFormData, load, setLoad, setToken,
+        setStatus, shortenAadharId, shortenNationalId
     } = useContext(CredContext);
 
     const [errors, setErrors] = useState({});
@@ -21,11 +23,11 @@ const UserContainer = ({ children }) => {
         if (!id) errs[type] = `${isPatient ? 'Aadhar' : 'National'} ID is required`;
         else if (id.length !== (isPatient ? 14 : 11)) errs[type] = `${isPatient ?
             'Aadhar' : 'National'} ID must be exactly ${isPatient ? 12 : 10} digits`;
-        
+
         if (!formData.password) errs.password = 'Password is required';
         else if (formData.password.length < 8) errs.password = 'Password must be at least 8 characters';
         else if (formData.password.length > 20) errs.password = 'Password cannot exceed 20 characters';
-        
+
         setErrors(errs); return Object.keys(errs).length === 0;
     };
 
@@ -46,10 +48,10 @@ const UserContainer = ({ children }) => {
     };
 
     const handleSubmit = async (e, url, clientId) => {
-        e.preventDefault(); const [type, func] = clientId === "aadharId" ? 
+        e.preventDefault(); const [type, func] = clientId === "aadharId" ?
             ["patients", shortenAadharId] : ["hospitals", shortenNationalId];
-        
-        if (!validate(clientId)) return;
+
+        if (!validate(clientId)) return; setLoad(true);
 
         const res = await fetch(`http://localhost:5000/${url}`, {
             method: "POST", headers: { "Content-Type": "application/json" },
@@ -59,10 +61,12 @@ const UserContainer = ({ children }) => {
         }).then(data => data.text());
 
         if (res === "Failure") {
-            setErrors({ [clientId]: `No Account with this ${clientId.replace(/([A-Z])/g, 
-                ' $1').replace(/^./, s => s.toUpperCase())} exists` }); return;
+            setErrors({
+                [clientId]: `No Account with this ${clientId.replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, s => s.toUpperCase())} exists`
+            }); setLoad(false); return;
         } else if (res === "Password") {
-            setErrors({ password: 'Incorrect Password' }); return;
+            setErrors({ password: 'Incorrect Password' }); setLoad(false); return;
         }
 
         if (url === "signup") {
@@ -73,10 +77,9 @@ const UserContainer = ({ children }) => {
 
         setFormData({ ...formData, [clientId]: func(formData[clientId]) });
 
-        sessionStorage.setItem("status", type); setStatus(type);
-        localStorage.setItem("token", res); setToken(res); nav("/");
+        localStorage.setItem("token", res); setToken(res); setLoad(false);
+        sessionStorage.setItem("status", type); setStatus(type); nav("/");
     };
-
 
     return (
         <UserContext.Provider value={{ errors, handleChange, handleSubmit }}>
@@ -89,7 +92,7 @@ const UserContainer = ({ children }) => {
 
                     {children}
                 </div>
-            </div>
+            </div> {load && (<Loader />)}
         </UserContext.Provider>
     );
 };

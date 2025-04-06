@@ -7,6 +7,8 @@ const CredContainer = ({ children }) => {
         aadharId: '', nationalId: '', name: '', password: ''
     });
 
+    const [load, setLoad] = useState(false);
+
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [status, setStatus] = useState(sessionStorage.getItem("status") || "patients");
 
@@ -15,7 +17,7 @@ const CredContainer = ({ children }) => {
 
     return (
         <CredContext.Provider value={{
-            formData, setFormData,
+            formData, setFormData, load, setLoad,
             token, setToken, status, setStatus,
             shortenAadharId, shortenNationalId
         }}> {children} </CredContext.Provider>

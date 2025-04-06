@@ -1,16 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import RecordForm from "../components/RecordForm";
-import { GridBox, TextBox } from "../components/GridBox";
 import { Button } from "../components/Buttons";
+import { GridBox, TextBox } from "../components/GridBox";
+import Loader from "../components/Loader";
+import RecordForm from "../components/RecordForm";
 
 import { CredContext } from "../contexts/CredContext";
 
 const Dashboard = () => {
     const {
-        formData, setFormData, token,
-        setToken, status, setStatus
+        formData, setFormData, load, setLoad,
+        token, setToken, status, setStatus
     } = useContext(CredContext);
 
     const [records, setRecords] = useState([]);
@@ -19,6 +20,8 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoad(true);
+
             const res = await fetch("http://localhost:5000/get-data", {
                 method: "POST", headers: {
                     "Content-Type": "application/json"
@@ -27,7 +30,7 @@ const Dashboard = () => {
 
             if (res["cred"] === "Failure") {
                 nav(`/${status}/login`); setToken(null);
-                localStorage.removeItem("token"); return;
+                localStorage.removeItem("token"); setLoad(false); return;
             }
 
             setFormData({ ...res["cred"] }); setRecords(res["records"]);
@@ -36,7 +39,7 @@ const Dashboard = () => {
             sessionStorage.setItem("records", JSON.stringify(res["records"]));
 
             const newStatus = (res["cred"]["aadharId"] == null) ? "hospitals" : "patients";
-            sessionStorage.setItem("status", newStatus); setStatus(newStatus);
+            sessionStorage.setItem("status", newStatus); setStatus(newStatus); setLoad(false);
         }
 
         if (sessionStorage.getItem("cred") != null) {
@@ -71,8 +74,6 @@ const Dashboard = () => {
                     <Button func={logout} color="blue-600" trans="blue-700" title="Log Out" />
                 </div>
             </nav>
-
-
 
             <main className="flex-1 container mx-auto p-4 md:p-6">
                 <div className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -152,6 +153,8 @@ const Dashboard = () => {
                     </div>
                 </div>
             </main>
+
+            {load && (<Loader />)}
 
             {status === "hospitals" && showAddModal && (
                 <RecordForm setVis={setShowAddModal} records={records} setRecords={setRecords} />

@@ -10,10 +10,12 @@ const SignupPage = ({ type }) => {
     const { formData } = useContext(CredContext), { errors, handleChange, handleSubmit } = useContext(UserContext);
     const chk = type === "patients", handleFormSubmit = e => handleSubmit(e, "signup", chk ? "aadharId" : "nationalId");
 
+    
+
     return (
         <form className="space-y-6">
             <div className="space-y-4">
-                <Input id="name" type="text" placeholder={chk ? "Anubhav Jain" : "Fortis HealthCare"}
+                <Input id="name" type="text" placeholder={chk ? "Anubhav Jain" : "Fortis HealthCare"} func={handleChange}
                     label={`${chk ? "Patient" : "Hospital"}'s Name`} inpValue={formData.name} error={errors.name} />
 
                 {type === 'patients' ? (
