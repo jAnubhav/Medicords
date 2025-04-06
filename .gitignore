@@ -2,6 +2,7 @@
 /contracts/manager/build
 
 /private_data.py
+/handle.json
 
 /__pycache__
 /env
