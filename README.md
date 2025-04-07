@@ -1,4 +1,4 @@
-# Medicords - Your Health, Your Privacy Secured by Blockchain
+# Medicords - Your Health, Your Privacy in Your Hand Secured by Blockchain
 
 ### Introduction:
 **Medicords** (aka 'Medical Records') is more than just an idea—it's a revolution. Our vision is to securely store every individual's complete medical history on the blockchain, eliminating paper-based records and preventing any dilution, destruction, or tampering by individuals or organizations.
