@@ -10,6 +10,8 @@ import Signup from "./pages/Signup";
 
 import Dashboard from "./pages/Dashboard";
 
+import NotFound from "./pages/NotFound";
+
 import {
     CredContainer, CredContext
 } from "./contexts/CredContext";
@@ -26,6 +28,8 @@ const InnerApp = () => {
 
             <Route path="/hospitals/login" element={token ? <Navigate to="/" /> : <Login type="hospitals" />} />
             <Route path="/hospitals/signup" element={token ? <Navigate to="/" /> : <Signup type="hospitals" />} />
+
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };
