@@ -1,44 +1,65 @@
-# Medicords
+# Medicords - Your Health, Your Privacy in Your Hand Secured by Blockchain
 
-## 📌 Overview
+### Introduction:
+**Medicords** (aka 'Medical Records') is more than just an idea—it's a revolution. Our vision is to securely store every individual's complete medical history on the blockchain, eliminating paper-based records and preventing any dilution, destruction, or tampering by individuals or organizations.
 
-Medicords is a revolutionary platform designed to keep an individual's entire medical history in a **paperless format** by leveraging the power and security of **blockchain technology**. This ensures **tamper-proof, accessible, and secure** storage of medical records, reducing costs and enhancing efficiency for both patients and healthcare providers.
+### User Roles:
+- Patients:
+  - Create accounts using their Aadhar ID for unique identification.
+  - Access and view their medical records securely through the portal.
 
-## 🔹 Key Features
+- Hospitals:
+  - Register using their National Identification Number (NIN).
+  - Use the portal to add and manage medical records for registered patients.
 
-- **Blockchain-Powered Security** – Immutable and encrypted storage of medical records.
-- **Paperless Documentation** – Eliminates the need for physical storage, making record-keeping seamless.
-- **Universal Accessibility** – Patients, doctors, and medical institutions can securely access records from **anywhere, anytime**.
-- **Cost-Effective Solution** – Reduces administrative and operational costs for healthcare providers.
-- **Patient-Centric Control** – Patients have control over who can access their medical records.
+### Key Features:
+1. Blockchain powered Security to critical data.
+2. Anytime, anywhere access with permissions.
+3. Cheaper Data Storage for Hospitals and Clinics.
 
-## 💡 How It Works
+### Tech Stack:
+- Blockchain: Aptos (Rust-based)
+- Smart Contracts: Move Programmming Language
+- Blockchain Interactions: Aptos-SDK for Python
+- Backend / API: Quart WebFramework for Python
+- Frontend: ReactJS
+- Account Data: RedisDB (Key-Value)
 
-1. **Patient Registration** – Each patient gets a unique blockchain-based address.
-2. **Record Storage** – Medical records are encrypted and stored securely on the blockchain.
-3. **Access Control** – Patients can grant doctors or medical institutes permission to view or update records.
-4. **Seamless Retrieval** – Records can be accessed in real time with authentication mechanisms.
+### Getting Started:
+1. Clone the Github Repository
 
-## 🚀 Benefits
+   ```bash
+   git clone https://github.com/jAnubhav/Medicords-Combined
+   ```
+3. Download a Blockchain wallet that supports Aptos.
+4. Create a file `private_data.py` in the folder with the following data:
 
-✅ No risk of data loss or manipulation.
-✅ Eliminates the hassle of carrying physical reports.
-✅ Speeds up medical treatments with instant access to history.
-✅ Transparent and efficient healthcare management.
+   ```py
+   key = "Your Private Key"
+   secret_key = 'Your Secret Key'
+    
+   host = 'Your Redis Cloud'
+   port = Redis_Port_Number
+   password = "Your Redis Password"
+   ```
+6. Install the listed packages for Python:
+   - aptos-sdk
+   - quart
+   - quart-cors
+   - redis
+   - bcrypt
+   - pyjwt
+5. Open `controller.py`, comment line no. 108 and uncomment line no. 106.
+6. Execute the file `controller.py`.
+7. Execute the file `main.py`.
+8. Open `./frontend `
 
-## 📈 Future Enhancements
+   ```bash
+   cd ./frontend
+   ```
+9. Start the React Application
 
-- AI-powered analytics for predictive healthcare.
-- Integration with insurance providers.
-- Decentralized identity verification for enhanced privacy.
-
-## 🔗 Get Started
-
-Join **Medicords** today and experience a seamless, secure, and paperless way to manage your medical history.
-
-For more information, visit our website or contact us!
-
----
-
-**Medicords** – Revolutionizing Healthcare with Blockchain Technology.
-
+    ```bash
+    npm install
+    npm start
+    ```
