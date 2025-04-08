@@ -25,7 +25,7 @@
 - Frontend: ReactJS
 - Account Data: RedisDB (Key-Value)
 
-<img src="./sample/TechStack.png" alt="Tech Stack" width="500"/>
+<img src="./sample/TechStack.png" alt="Tech Stack" width="300"/>
 
 ### Getting Started:
 1. Clone the GitHub Repository
