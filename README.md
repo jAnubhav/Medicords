@@ -23,7 +23,7 @@
 <img src="./sample/Hospital Dashboard.png" alt="Hospital Dashboard">
 
 > Patient's Dashboard
-<img src="./sample/Patient Dashboard.png" alt="Patient Dashboard">
+<img src="./sample/Patient Dashboard.png" alt="Patient Dashboard" width="250">
 
 ### Tech Stack:
 - Blockchain: Aptos (Rust-based)
