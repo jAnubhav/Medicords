@@ -17,6 +17,14 @@
 2. Anytime, anywhere access with permissions.
 3. Cheaper Data Storage for Hospitals and Clinics.
 
+### Sample Images
+
+> Hospital's Dashboard
+<img src="./sample/Hospital Dashboard.png" alt="Hospital Dashboard">
+
+> Patient's Dashboard
+<img src="./sample/Patient Dashboard.png" alt="Patient Dashboard">
+
 ### Tech Stack:
 - Blockchain: Aptos (Rust-based)
 - Smart Contracts: Move Programmming Language
