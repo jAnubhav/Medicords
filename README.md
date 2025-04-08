@@ -28,12 +28,26 @@
 <img src="./sample/TechStack.png" alt="Tech Stack" width="500"/>
 
 ### Getting Started:
-1. Clone the Github Repository
-
+1. Clone the GitHub Repository
    ```bash
-   git clone https://github.com/jAnubhav/Medicords-Combined
+   git clone https://github.com/jAnubhav/Medicords
+   cd Medicords
    ```
-3. Download a Blockchain wallet that supports Aptos.
+   
+2. Install Python Dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+   > 📦 The requirements.txt includes:
+   > - aptos-sdk
+   > - quart
+   > - quart-cors
+   > - redis
+   > - bcrypt
+   > - pyjwt
+
+3. Download and set up a blockchain wallet that supports Aptos.
+
 4. Create a file `private_data.py` in the folder with the following data:
 
    ```py
@@ -44,24 +58,18 @@
    port = Redis_Port_Number
    password = "Your Redis Password"
    ```
-6. Install the listed packages for Python:
-   - aptos-sdk
-   - quart
-   - quart-cors
-   - redis
-   - bcrypt
-   - pyjwt
-5. Open `controller.py`, comment line no. 108 and uncomment line no. 106.
-6. Execute the file `controller.py`.
-7. Execute the file `main.py`.
-8. Open `./frontend `
-
+  
+5. Update `controller.py`:
+   - Comment Line No. 108
+   - Uncomment Line No. 106
+  
+6. Execute the file `controller.py`. After Successful execution, undo Step No. 5 and re-execute the file.
+   > A background service that pre-creates Aptos accounts and stores them for instant assignment to users, reducing onboarding time.
+   
+8. Execute the file `main.py`.
+9. Launch the React Application
    ```bash
    cd ./frontend
+   npm install
+   npm start
    ```
-9. Start the React Application
-
-    ```bash
-    npm install
-    npm start
-    ```
