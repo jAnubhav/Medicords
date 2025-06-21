@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import Input from '../components/Input';
 import { ButtonLink } from '../components/Buttons';

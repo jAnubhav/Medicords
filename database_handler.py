@@ -29,7 +29,7 @@ def retrieve(clientId: str):
     This function will retrieve Value based on the Key.
     '''
 
-    return redisObj.json().get(clientId)
+    return redisObj.json().get(clientId).__dict__
 
 def check_pw(pass1: str, pass2: str):
     '''
@@ -43,5 +43,7 @@ def get(key: str, clientId: str):
     This function will return the data for the dashboard.
     '''
 
-    return {key: clientId, "name": 
-            redisObj.json().get(clientId)[0]}
+    data = redisObj.json().get(clientId)
+    
+    if (not data): return {key: clientId};
+    return {key: clientId, "name": data[1]}

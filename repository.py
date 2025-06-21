@@ -35,7 +35,7 @@ async def publish_contract(account: Account, cdir: str, subdir: str) -> None:
     txn_hash = await publisher.publish_package(account, mtdata, [
         module]); await rest_client.wait_for_transaction(txn_hash)
     
-async def entry_function(account: Account, func_name: str, args: list[any]) -> None:
+async def entry_function(account: Account, func_name: str, args: list) -> None:
     '''
     This function will call the Entry Function that interacts with the blockchain.
     '''

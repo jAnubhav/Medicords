@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import Input from '../components/Input';
 import { ButtonLink } from '../components/Buttons'
@@ -9,8 +9,6 @@ import { UserContainer, UserContext } from '../contexts/UserContext';
 const SignupPage = ({ type }) => {
     const { formData } = useContext(CredContext), { errors, handleChange, handleSubmit } = useContext(UserContext);
     const chk = type === "patients", handleFormSubmit = e => handleSubmit(e, "signup", chk ? "aadharId" : "nationalId");
-
-    
 
     return (
         <form className="space-y-6">

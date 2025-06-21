@@ -31,7 +31,7 @@ async def login():
     user = retrieve(client_id)
 
     if (not user): return "Failure"
-    elif (not check_pw(password, user[1])): return "Password"
+    elif (not check_pw(password, user["password"])): return "Password"
     
     return generate_token(secret_key, client_id)
 
@@ -84,4 +84,4 @@ async def add_record():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
