@@ -1,5 +1,12 @@
 import { createContext, useState } from "react";
 
+// Configurable backend URL (change as needed for prod/dev)
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+// Debug: Log the backend URL being used
+console.log("Backend URL loaded:", BACKEND_URL);
+console.log("Environment variable:", import.meta.env.VITE_BACKEND_URL);
+
 const CredContext = createContext();
 
 const CredContainer = ({ children }) => {
@@ -24,4 +31,5 @@ const CredContainer = ({ children }) => {
     );
 };
 
-export { CredContainer, CredContext };
+export default CredContext;
+export { CredContainer };

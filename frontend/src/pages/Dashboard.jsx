@@ -6,7 +6,18 @@ import { GridBox, TextBox } from "../components/GridBox";
 import Loader from "../components/Loader";
 import RecordForm from "../components/RecordForm";
 
-import { CredContext } from "../contexts/CredContext";
+import CredContext, { BACKEND_URL } from "../contexts/CredContext";
+
+// JWT expiration check utility
+function isTokenExpired(token) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (!payload.exp) return false;
+        return Date.now() >= payload.exp * 1000;
+    } catch {
+        return true;
+    }
+}
 
 const Dashboard = () => {
     const {
@@ -15,48 +26,85 @@ const Dashboard = () => {
     } = useContext(CredContext);
 
     const [records, setRecords] = useState([]);
+    const [error, setError] = useState(null);
 
     const nav = useNavigate();
-
     useEffect(() => {
         const fetchData = async () => {
             setLoad(true);
-
-            const res = await fetch("http://localhost:5000/get-data", {
-                method: "POST", headers: {
-                    "Content-Type": "application/json"
-                }, body: JSON.stringify({ "token": token })
-            }).then(data => data.json());
-
-            if (res["cred"] === "Failure") {
-                nav(`/${status}/login`); setToken(null);
-                localStorage.removeItem("token"); setLoad(false); return;
+            setError(null);
+            try {
+                if (!token || isTokenExpired(token)) {
+                    setError("Session expired. Please log in again.");
+                    logout();
+                    return;
+                }
+                const res = await fetch(`${BACKEND_URL}/get-data`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ token }),
+                });
+                if (!res.ok) {
+                    throw new Error(`API error: ${res.status}`);
+                }
+                const data = await res.json();
+                if (!data || typeof data !== "object" || !("cred" in data) || !("records" in data)) {
+                    setError("Invalid response from server.");
+                    setLoad(false);
+                    return;
+                }
+                if (data["cred"] === "Failure") {
+                    nav(`/${status}/login`);
+                    setToken(null);
+                    try { localStorage.removeItem("token"); } catch {}
+                    setLoad(false);
+                    return;
+                }
+                setFormData({ ...data["cred"] });
+                setRecords(data["records"]);
+                try {
+                    sessionStorage.setItem("cred", JSON.stringify(data["cred"]));
+                    sessionStorage.setItem("records", JSON.stringify(data["records"]));
+                } catch (err) {
+                    console.error("Error saving to sessionStorage:", err);
+                }
+                const newStatus = data["cred"]["aadharId"] == null ? "hospitals" : "patients";
+                try { sessionStorage.setItem("status", newStatus); } catch {}
+                setStatus(newStatus);
+            } catch (err) {
+                setError("Failed to load data. Please try again.");
+                console.error("Error fetching data:", err);
+            } finally {
+                setLoad(false);
             }
-
-            setFormData({ ...res["cred"] }); setRecords(res["records"]);
-
-            sessionStorage.setItem("cred", JSON.stringify(res["cred"]));
-            sessionStorage.setItem("records", JSON.stringify(res["records"]));
-
-            const newStatus = (res["cred"]["aadharId"] == null) ? "hospitals" : "patients";
-            sessionStorage.setItem("status", newStatus); setStatus(newStatus); setLoad(false);
+        };
+        const cachedCred = sessionStorage.getItem("cred");
+        const cachedRecords = sessionStorage.getItem("records");
+        if (cachedCred && cachedRecords) {
+            try {
+                setFormData(JSON.parse(cachedCred));
+                setRecords(JSON.parse(cachedRecords));
+                setStatus(sessionStorage.getItem("status"));
+            } catch (err) {
+                setError("Corrupted session data. Reloading...");
+                console.error("Error parsing sessionStorage:", err);
+                fetchData();  // fallback
+            }
+        } else {
+            fetchData();
         }
-
-        if (sessionStorage.getItem("cred") != null) {
-            setFormData(JSON.parse(sessionStorage.getItem("cred")));
-            setRecords(JSON.parse(sessionStorage.getItem("records")));
-
-            setStatus(sessionStorage.getItem("status"));
-        } else fetchData();
     }, []);
 
     const [showAddModal, setShowAddModal] = useState(false);
     const handleOpenModal = () => setShowAddModal(true);
 
     const logout = () => {
-        sessionStorage.removeItem("cred"); sessionStorage.removeItem("records");
-        localStorage.removeItem("token"); nav(`/${status}/login`); setToken(null);
-
+        try { sessionStorage.removeItem("cred"); } catch {}
+        try { sessionStorage.removeItem("records"); } catch {}
+        try { localStorage.removeItem("token"); } catch {}
+        nav(`/${status}/login`); setToken(null);
         setFormData({ aadharId: '', nationalId: '', name: '', password: '' });
     }
 
@@ -70,19 +118,21 @@ const Dashboard = () => {
                         </div>
                         <h1 className="text-2xl font-bold text-white">Medicords</h1>
                     </div>
-
                     <Button func={logout} color="blue-600" trans="blue-700" title="Log Out" />
                 </div>
             </nav>
-
             <main className="flex-1 container mx-auto p-4 md:p-6">
+                {error && (
+                    <div className="bg-red-800 text-red-100 p-4 rounded mb-4">
+                        {error}
+                    </div>
+                )}
                 <div className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg">
                     <h2 className="text-xl md:text-2xl font-semibold">
                         Welcome, <span className="text-blue-300">{formData.name}</span>
                     </h2>
                     <p className="mt-2 text-gray-400">Here are your medical records</p>
                 </div>
-
                 <div className="mb-6">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-medium">Your Records</h3>
@@ -90,7 +140,6 @@ const Dashboard = () => {
                             <Button func={handleOpenModal} color="blue-600" trans="blue-700" title="+ Add Record" />
                         )}
                     </div>
-
                     <div className="space-y-6">
                         {records && records.length > 0 ? (
                             records.map((record, index) => (
@@ -153,9 +202,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </main>
-
             {load && (<Loader />)}
-
             {status === "hospitals" && showAddModal && (
                 <RecordForm setVis={setShowAddModal} records={records} setRecords={setRecords} />
             )}

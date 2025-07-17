@@ -3,8 +3,8 @@ import { useContext } from 'react';
 import Input from '../components/Input';
 import { ButtonLink } from '../components/Buttons'
 
-import { CredContext } from '../contexts/CredContext';
-import { UserContainer, UserContext } from '../contexts/UserContext';
+import CredContext from '../contexts/CredContext';
+import UserContext, { UserContainer } from '../contexts/UserContext';
 
 const SignupPage = ({ type }) => {
     const { formData } = useContext(CredContext), { errors, handleChange, handleSubmit } = useContext(UserContext);
