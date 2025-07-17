@@ -7,7 +7,7 @@
 
 private_data.py
 /handle.json
-contracts
+
 handle.json
 venv
 /venv
@@ -17,3 +17,4 @@ __pycache__
 /env
 
 /frontend/node_modules
+.DS_Store
