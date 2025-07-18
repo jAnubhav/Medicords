@@ -6,12 +6,20 @@
 ## 👥 User Roles
 
 ### 🧑‍⚕️ Patients
-- Register using **Aadhar ID** for unique identification.
-- Access and view medical records securely with permission-based access.
+- **Login at**: `/patients/login`
+- **Functionality**:
+  - Register using **Aadhar ID** for unique and secure identification.
+  - **View your complete medical history** anytime through your personal dashboard.
+  - Access medical records securely with permissioned and blockchain-verified access.
 
 ### 🏥 Hospitals
-- Register using **National Identification Number (NIN)**.
-- Add, manage, and retrieve patient records via a secure dashboard.
+- **Login at**: `/hospitals/login`
+- **Functionality**:
+  - Register using **National Identification Number (NIN)**.
+  - **Add new medical records** for any registered patient.
+  - Manage and track medical entries for multiple patients.
+  - All submissions are permanently recorded on the blockchain, ensuring no tampering or deletion.
+
 
 ## 🔐 Key Features
 1. **Blockchain Security** for tamper-proof data integrity.
