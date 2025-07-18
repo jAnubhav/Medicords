@@ -12,9 +12,7 @@ import Dashboard from "./pages/Dashboard";
 
 import NotFound from "./pages/NotFound";
 
-import {
-    CredContainer, CredContext
-} from "./contexts/CredContext";
+import CredContext, { CredContainer } from "./contexts/CredContext";
 
 const InnerApp = () => {
     const { token, status } = useContext(CredContext)

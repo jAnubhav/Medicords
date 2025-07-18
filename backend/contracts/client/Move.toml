@@ -4,5 +4,5 @@ version = "1.0.0"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "devnet"
+rev = "aptos-release-v1.29"
 subdir = "aptos-framework"

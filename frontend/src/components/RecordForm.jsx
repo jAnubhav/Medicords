@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { CredContext } from "../contexts/CredContext";
+import CredContext, { BACKEND_URL } from "../contexts/CredContext";
 
 import { Button } from "./Buttons";
 import Input from "./Input";
@@ -75,28 +75,35 @@ const RecordForm = ({ setVis, records, setRecords }) => {
 
     const handleAddRecord = async () => {
         if (!validateForm()) return; const newErrors = {}; setLoad(true);
-
-        const res = await fetch("http://localhost:5000/add-record", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                ...newRecord, "symptoms": newRecord.symptoms.join(","),
-                "nationalId": shortenAadharId(formData.nationalId),
+        try {
+            const res = await fetch(`${BACKEND_URL}/add-record`, {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...newRecord, "symptoms": newRecord.symptoms.join(","),
+                    "nationalId": shortenAadharId(formData.nationalId),
+                    "client_id": newRecord.client_id.replace(/\s+/g, "")
+                })
+            }).then(data => data.text());
+            if (res === "AadharId") {
+                newErrors.aadharId = "No Account with this Aadhar Id doesn't exists";
+                setErrors(newErrors); setLoad(false); return;
+            }
+            records.push({
+                ...newRecord, "date": res, "symptoms": newRecord.symptoms.join(","),
                 "client_id": newRecord.client_id.replace(/\s+/g, "")
-            })
-        }).then(data => data.text());
-
-        if (res === "AadharId") {
-            newErrors.aadharId = "No Account with this Aadhar Id doesn't exists";
-            setErrors(newErrors); setLoad(false); return;
+            }); 
+            try {
+                sessionStorage.setItem("records", JSON.stringify(records));
+            } catch (err) {
+                console.error("Error saving records to sessionStorage:", err);
+            }
+            handleCloseModal();
+            setRecords(records); setLoad(false);
+        } catch (err) {
+            setErrors({ general: "Failed to add record. Please try again." });
+            setLoad(false);
+            console.error("Error adding record:", err);
         }
-
-        records.push({
-            ...newRecord, "date": res, "symptoms": newRecord.symptoms.join(","),
-            "client_id": newRecord.client_id.replace(/\s+/g, "")
-        }); 
-        
-        sessionStorage.setItem("records", JSON.stringify(records)); handleCloseModal();
-        setRecords(records); setLoad(false);
     };
 
     const filteredSymptoms = availableSymptoms.filter(symptom => symptom.toLowerCase()

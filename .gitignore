@@ -1,10 +1,20 @@
-/contracts/client/build
-/contracts/manager/build
+backend/contracts/client/build
+
+
+backend/contracts/manager/build
 
 /private_data.py
+
+private_data.py
 /handle.json
 
+handle.json
+venv
+/venv
+
 /__pycache__
+__pycache__
 /env
 
 /frontend/node_modules
+.DS_Store
