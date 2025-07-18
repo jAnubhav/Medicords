@@ -21,7 +21,7 @@
 ## 📸 Sample Interfaces
 
 **Hospital Dashboard**  
-<img src="./sample/Hospital Dashboard.png" alt="Hospital Dashboard" width="800"/>
+<img src="./sample/Hospital Dashboard.png" alt="Hospital Dashboard"/>
 
 **Tech Stack Overview**  
 <img src="./sample/TechStack.png" alt="Tech Stack" width="400"/>
