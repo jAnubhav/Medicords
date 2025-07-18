@@ -1,7 +1,7 @@
-/contracts/client/build
+backend/contracts/client/build
 
 
-/contracts/manager/build
+backend/contracts/manager/build
 
 /private_data.py
 
